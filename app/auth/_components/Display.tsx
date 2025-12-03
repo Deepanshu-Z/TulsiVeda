@@ -17,7 +17,7 @@ export default function Display() {
           e.preventDefault();
           await signIn("email", {
             email,
-            callbackUrl: "/",
+            callbackUrl: "/auth/getstarted/details",
             redirect: false,
           });
         }}
