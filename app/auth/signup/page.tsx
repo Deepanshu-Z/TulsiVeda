@@ -1,7 +1,9 @@
+"use client";
 import { LogoIcon } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 
 export default function Signup() {
@@ -24,6 +26,7 @@ export default function Signup() {
 
           <div className="mt-6  gap-3">
             <Button
+              onClick={() => signIn("google", { callbackUrl: "/" })}
               className="cursor-pointer w-full"
               type="button"
               variant="outline"

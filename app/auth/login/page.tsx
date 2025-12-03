@@ -26,7 +26,11 @@ export default function Page() {
 
           <div className="mt-6  gap-3">
             <Button
-              onClick={() => signIn("google")}
+              onClick={() =>
+                signIn("google", {
+                  callbackUrl: "/",
+                })
+              }
               className="w-full cursor-pointer"
               type="button"
               variant="outline"
