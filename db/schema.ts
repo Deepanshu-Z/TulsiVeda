@@ -6,6 +6,8 @@ import {
   primaryKey,
   integer,
   pgEnum,
+  varchar,
+  jsonb,
 } from "drizzle-orm/pg-core";
 import { drizzle } from "drizzle-orm/postgres-js";
 import type { AdapterAccountType } from "@auth/core/adapters";
@@ -95,4 +97,45 @@ export const authenticators = pgTable(
   ]
 );
 
-export default users;
+const products = pgTable("products", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }).notNull(),
+  category: varchar("category", { length: 100 }).notNull(), // "fat-burner" | "weight-gainer"
+  description: text("description"),
+
+  price: integer("price").notNull(),
+  discountPrice: integer("discount_price"),
+
+  inStock: boolean("in_stock").notNull().default(true),
+
+  images: jsonb("images").notNull().$type<string[]>(),
+  brand: varchar("brand", { length: 150 }).notNull(),
+
+  // Supplement-specific
+  form: varchar("form", { length: 50 }), // powder | capsule | tablet | liquid
+  goal: jsonb("goal").$type<string[]>(), // ["weight-loss"] / ["muscle-gain"]
+  ingredients: jsonb("ingredients").$type<string[]>(),
+  allergens: jsonb("allergens").$type<string[]>(),
+
+  // Regulatory
+  warnings: jsonb("warnings").$type<string[]>(),
+  directions: text("directions"),
+  certifications: jsonb("certifications").$type<string[]>(),
+
+  expiryDate: timestamp("expiry_date", { mode: "date" }),
+  manufacturedDate: timestamp("manufactured_date", { mode: "date" }),
+
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+const ratings = pgTable("ratings", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  username: text("username").notNull(),
+  comments: jsonb("comments").$type<string[]>(),
+  images: jsonb("images").$type<string[]>(),
+});
+export default { users, products };
