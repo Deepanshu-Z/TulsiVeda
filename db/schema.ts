@@ -12,7 +12,13 @@ import {
 import { drizzle } from "drizzle-orm/postgres-js";
 import type { AdapterAccountType } from "@auth/core/adapters";
 export const rolesEnum = pgEnum("roles", ["user", "admin"]);
-
+export const categoryEnum = pgEnum("categories", [
+  "Uncategorized",
+  "Health & Fitness",
+  "Suppliments",
+  "Skin",
+  "Hygiene",
+]);
 export const users = pgTable("user", {
   id: text("id")
     .primaryKey()
@@ -28,6 +34,9 @@ export const users = pgTable("user", {
 export const accounts = pgTable(
   "account",
   {
+    id: text("id")
+      .$defaultFn(() => crypto.randomUUID())
+      .primaryKey(),
     userId: text("userId")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
@@ -103,7 +112,7 @@ export const products = pgTable("products", {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   name: varchar("name", { length: 255 }).notNull(),
-  category: varchar("category", { length: 100 }).notNull(), // "fat-burner" | "weight-gainer"
+  category: categoryEnum().default("Uncategorized").notNull(),
   description: text("description"),
 
   price: integer("price").notNull(),
@@ -112,7 +121,6 @@ export const products = pgTable("products", {
   inStock: boolean("in_stock").notNull().default(true),
 
   images: jsonb("images").notNull().$type<string[]>(),
-  brand: varchar("brand", { length: 150 }).notNull(),
 
   // Supplement-specific
   form: varchar("form", { length: 50 }), // powder | capsule | tablet | liquid
