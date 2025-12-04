@@ -13,10 +13,11 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import type { AdapterAccountType } from "@auth/core/adapters";
 export const rolesEnum = pgEnum("roles", ["user", "admin"]);
 
-const users = pgTable("user", {
+export const users = pgTable("user", {
   id: text("id")
     .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
+    .$defaultFn(() => crypto.randomUUID())
+    .unique(),
   name: text("name"),
   email: text("email").unique(),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
@@ -97,7 +98,7 @@ export const authenticators = pgTable(
   ]
 );
 
-const products = pgTable("products", {
+export const products = pgTable("products", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -130,7 +131,7 @@ const products = pgTable("products", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-const ratings = pgTable("ratings", {
+export const ratings = pgTable("ratings", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -138,4 +139,30 @@ const ratings = pgTable("ratings", {
   comments: jsonb("comments").$type<string[]>(),
   images: jsonb("images").$type<string[]>(),
 });
+export const cart = pgTable("cart", {
+  id: text("id")
+    .$defaultFn(() => crypto.randomUUID())
+    .primaryKey()
+    .notNull(),
+  userId: text("userId")
+    .references(() => users.id)
+    .unique(),
+});
+
+export const cartItems = pgTable("cartItems", {
+  id: text("id")
+    .$defaultFn(() => crypto.randomUUID())
+    .primaryKey(),
+
+  cartId: text("cartId")
+    .notNull()
+    .references(() => cart.id),
+
+  productId: text("productId")
+    .notNull()
+    .references(() => products.id),
+
+  quantity: integer("quantity").notNull().default(1),
+});
+
 export default { users, products };
