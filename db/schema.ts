@@ -120,7 +120,7 @@ export const products = pgTable("products", {
 
   inStock: boolean("in_stock").notNull().default(true),
 
-  featureImage: jsonb("featureImage").$type<string[]>().default([]),
+  // featureImage: jsonb("featureImage").$type<string[]>().default([]),
   galleryImages: jsonb("galleryImages").$type<string[]>().default([]),
 
   // Supplement-specific

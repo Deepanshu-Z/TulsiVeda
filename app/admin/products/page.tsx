@@ -34,6 +34,7 @@ export default function App() {
     resolver: zodResolver(productSchema),
   });
   const [files, setFiles] = useState<File[]>();
+
   const [imageUrl, setImageUrl] = useState<string[]>();
   const handleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files ? Array.from(e.target.files) : [];
@@ -41,6 +42,7 @@ export default function App() {
   };
 
   async function saveProduct(data: any) {
+    console.log("@@@DATA", data);
     const response = await axios.post("/api/admin/addproduct  ", data);
     console.log(response.data);
     if (response.data.success) console.log("product added!");
@@ -81,9 +83,6 @@ export default function App() {
     }
     setImageUrl((prev) => [...(prev ?? []), ...uploadedUrls]);
   };
-  useEffect(() => {
-    console.log("Updated URLs:", imageUrl);
-  }, [imageUrl]);
 
   return (
     <section className="flex min-h-screen bg-zinc-50 px-1 py-16 md:py-32 dark:bg-transparent">
@@ -342,36 +341,36 @@ export default function App() {
             </div>
           </div>
           {/* IMAGES SECTION */}
-          <div className="mt-1 space-y-6">
-            <div>
-              <div className="space-y-2">
-                <Label htmlFor="featureImage" className=" block text-sm">
-                  Select Product Featured Image
-                </Label>
-                <Input
-                  id="featureImage"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleSelect}
-                />
+          {/* <div className="mt-1 space-y-6">
+              <div>
+                <div className="space-y-2">
+                  <Label htmlFor="featureImage" className=" block text-sm">
+                    Select Product Featured Image
+                  </Label>
+                  <Input
+                    id="featureImage"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleSelect}
+                  />
 
-                <button
-                  disabled={!files}
-                  onClick={uploadAll}
-                  className="px-4 py-2 bg-black text-white rounded"
-                >
-                  Upload
-                </button>
-                <p>{errors.manufacturedDate?.message}</p>
+                  <button
+                    disabled={!files}
+                    onClick={uploadAll}
+                    className="px-4 py-2 bg-black text-white rounded"
+                  >
+                    Upload
+                  </button>
+                  <p>{errors.manufacturedDate?.message}</p>
+                </div>
               </div>
-            </div>
-          </div>
+            </div> */}
 
           <div className="mt-1 space-y-6">
             <div>
               <div className="space-y-2">
                 <Label htmlFor="galleryImage" className=" block text-sm">
-                  Select Product Featured Image
+                  Select Image Gallery
                 </Label>
                 <Input
                   id="galleryImage"

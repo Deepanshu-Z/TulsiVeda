@@ -43,6 +43,13 @@
       "when": 1764838993418,
       "tag": "0005_living_zzzax",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1764935412654,
+      "tag": "0006_shallow_bug",
+      "breakpoints": true
     }
   ]
 }
