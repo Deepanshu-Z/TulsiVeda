@@ -36,16 +36,23 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        console.log("@@@@@@@@@@@@@@TOKEN: ", token);
-        console.log("@@@@@@@@@@@@@@USER: ", user);
         const response = await db
           .selectDistinct()
           .from(schema.users)
           .where(eq(schema.users.email, user.email!));
         const role = response[0].role;
-        console.log("@@@@@@@@@@@@@@RESPONSE: ", role);
+
+        token.role = role;
       }
       return token;
+    },
+
+    async session({ session, token }) {
+      console.log(session);
+      //@ts-ignore
+      session.user.role = token.role;
+      console.log("@@@@@@@@@@ Session", session);
+      return session;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
