@@ -51,7 +51,6 @@ export const authOptions: AuthOptions = {
       console.log(session);
       //@ts-ignore
       session.user.role = token.role;
-      console.log("@@@@@@@@@@ Session", session);
       return session;
     },
   },
