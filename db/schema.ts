@@ -22,8 +22,7 @@ export const categoryEnum = pgEnum("categories", [
 export const users = pgTable("user", {
   id: text("id")
     .primaryKey()
-    .$defaultFn(() => crypto.randomUUID())
-    .unique(),
+    .$defaultFn(() => crypto.randomUUID()),
   name: text("name"),
   email: text("email").unique(),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
@@ -34,9 +33,6 @@ export const users = pgTable("user", {
 export const accounts = pgTable(
   "account",
   {
-    id: text("id")
-      .$defaultFn(() => crypto.randomUUID())
-      .primaryKey(),
     userId: text("userId")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
@@ -148,6 +144,7 @@ export const ratings = pgTable("ratings", {
   comments: jsonb("comments").$type<string[]>(),
   images: jsonb("images").$type<string[]>(),
 });
+
 export const cart = pgTable("cart", {
   id: text("id")
     .$defaultFn(() => crypto.randomUUID())

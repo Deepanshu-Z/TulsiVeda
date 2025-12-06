@@ -50,6 +50,27 @@
       "when": 1764935412654,
       "tag": "0006_shallow_bug",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1764993623434,
+      "tag": "0007_slippery_sleeper",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1764997481605,
+      "tag": "0008_futuristic_shatterstar",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1764997808291,
+      "tag": "0009_curious_roxanne_simpson",
+      "breakpoints": true
     }
   ]
 }
