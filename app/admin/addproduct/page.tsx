@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function App() {
   const {
@@ -36,6 +37,8 @@ export default function App() {
   const [files, setFiles] = useState<File[]>();
 
   const [imageUrl, setImageUrl] = useState<string[]>();
+  const router = useRouter();
+
   const handleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files ? Array.from(e.target.files) : [];
     setFiles(selected);
@@ -46,8 +49,11 @@ export default function App() {
     if (imageUrl) data.galleryImages = imageUrl;
     const response = await axios.post("/api/admin/addproduct  ", data);
     console.log(response.data);
-    if (response.data.success) console.log("product added!");
-    else console.log("Please try again");
+    if (response.data.success) {
+      console.log("product added!");
+      const id = response.data.id[0].id;
+      router.replace(`/shop/${id}`);
+    } else console.log("Please try again");
   }
   useEffect(() => {
     console.log("IMages are: ", imageUrl);

@@ -28,29 +28,32 @@ export async function POST(request: Request) {
   const newManufacturedDate = new Date(manufacturedDate);
 
   try {
-    const response = await db.insert(products).values({
-      name,
-      category,
-      description,
-      price,
-      discountPrice,
-      inStock,
-      galleryImages,
-      form,
-      goal,
-      ingredients,
-      allergens,
-      warnings,
-      directions,
-      certifications,
-      expiryDate: newExpiryDate,
-      manufacturedDate: newManufacturedDate,
-      createdAt,
-    });
+    const id = await db
+      .insert(products)
+      .values({
+        name,
+        category,
+        description,
+        price,
+        discountPrice,
+        inStock,
+        galleryImages,
+        form,
+        goal,
+        ingredients,
+        allergens,
+        warnings,
+        directions,
+        certifications,
+        expiryDate: newExpiryDate,
+        manufacturedDate: newManufacturedDate,
+        createdAt,
+      })
+      .returning({ id: products.id });
 
     return NextResponse.json({
       success: true,
-      data: response,
+      id: id,
       message: "Product added successfully",
     });
   } catch (error) {
