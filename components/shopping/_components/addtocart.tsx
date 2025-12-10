@@ -1,7 +1,4 @@
 import { Button } from "@/components/ui/button";
-import db from "@/db/db";
-import { cart, cartItems, users } from "@/db/schema";
-import { and, eq } from "drizzle-orm";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 
