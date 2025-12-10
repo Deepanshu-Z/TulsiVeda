@@ -2,10 +2,19 @@
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-
+import { CartItems } from "./components/CartItems";
+type ProductType = {
+  cartItemId: string;
+  discountPrice: number;
+  image: string[];
+  name: string;
+  price: number;
+  productId: number;
+  quantity: number;
+};
 const page = () => {
   const { data: session, status } = useSession();
-  const [products, setProducts] = useState();
+  const [products, setProducts] = useState<[]>();
   useEffect(() => {
     fetchCart();
   }, [status]);
@@ -17,7 +26,7 @@ const page = () => {
         console.log(response.data.items);
         setProducts(response.data.items);
       } else {
-        console.log("Not authenticated fetching from localstorage");
+        console.log("error fetching cart from DB", response.data.error);
       }
     } else if (status == "loading") {
       console.log("Waiting for status");
@@ -25,7 +34,18 @@ const page = () => {
       console.log("looking for localstorage");
     }
   }
-  return <div className="bg-red-500 w-full">"HEY"</div>;
+  if (products?.length == 0) return <p>No cart found</p>;
+  return (
+    <CartItems />
+    // <div className="pt-40 bg-red-500 w-full">
+    //   {products?.map((m: ProductType, i) => (
+    //     <div key={i}>
+    //       <p>{m.cartItemId}</p>
+    //       <p>{m.cartItemId}</p>
+    //     </div>
+    //   ))}
+    // </div>
+  );
 };
 
 export default page;

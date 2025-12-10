@@ -15,7 +15,7 @@ export async function GET(req: Request) {
       //@ts-ignore
       .where(and(eq(cart.userId, session?.user.id), eq(cart.status, "active")));
     if (response.length === 0)
-      return NextResponse.json({ message: "No cart exists", success: false });
+      return NextResponse.json({ error: "No cart exists", success: false });
 
     const cartid = response[0]?.id;
     const items = await db
