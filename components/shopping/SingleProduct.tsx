@@ -14,7 +14,7 @@ import {
 import { useEffect, useState } from "react";
 import getproductdetails from "./actions/getproductdetals";
 import { string } from "zod";
-import AddToCart from "@/components/shopping/_components/AddToCart";
+import AddToCart from "@/components/shopping/components/AddToCart";
 
 export type Product = {
   id: string;
