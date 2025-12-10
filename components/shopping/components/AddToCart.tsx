@@ -7,7 +7,7 @@ const AddToCart = (id: any) => {
 
   async function handleCart() {
     if (status === "authenticated") {
-      const response = await axios.post("/api/addtocart", {
+      const response = await axios.post("/api/cart/addtocart", {
         session,
         productId: id,
       });
