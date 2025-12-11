@@ -35,9 +35,6 @@ const page = () => {
     }
   }
 
-  if (!products || products.length === 0) {
-    return <p>No cart found</p>;
-  }
   return (
     <CartItems products={products} setProducts={setProducts} />
     // <div className="pt-40 bg-red-500 w-full">

@@ -45,10 +45,16 @@ export const CartItems = ({ products, setProducts }: PropType) => {
     setProducts((prev) =>
       prev.map((p) => {
         if (p.productId !== productId) return p;
-        if (p.quantity > 0) {
-          debouncedServer(p.productId, p.quantity - 1, p.cartItemId);
-          return { ...p, quantity: p.quantity - 1 };
+        if (p.quantity >= 1) {
+          const updated = p.quantity - 1;
+          if (updated == 0) {
+            setModal(true);
+            return p;
+          }
+          debouncedServer(p.productId, updated, p.cartItemId);
+          return { ...p, quantity: updated };
         }
+
         if (p.quantity == 0) setModal(true);
         return p;
       })
@@ -64,6 +70,28 @@ export const CartItems = ({ products, setProducts }: PropType) => {
       })
     );
   };
+
+  const removeProduct = async () => {
+    const response = await axios.delete("/api/cart/deletecart", {});
+  };
+
+  if (products.length === 0 && status != "loading")
+    return (
+      <div>
+        <p>No items found in cart</p>
+        <Button>Continue shopping</Button>
+      </div>
+    );
+
+  if (products.length === 0 && status === "loading")
+    return (
+      <div className="p-10 space-y-4">
+        <div className="bg-gray-200 h-6 w-1/3 rounded animate-pulse"></div>
+        <div className="bg-gray-200 h-64 rounded animate-pulse"></div>
+        <div className="bg-gray-200 h-4 w-1/2 rounded animate-pulse"></div>
+      </div>
+    );
+
   return (
     <div className="lg:max-w-5xl max-lg:max-w-2xl mx-auto bg-white ">
       <div className="grid lg:grid-cols-3 gap-6">
