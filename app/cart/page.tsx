@@ -13,30 +13,23 @@ export type ProductType = {
   quantity: number;
 };
 const page = () => {
-  const { data: session, status } = useSession();
   const [products, setProducts] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     fetchCart();
-  }, [status]);
+  }, []);
 
   async function fetchCart() {
-    if (status === "authenticated") {
-      const response = await axios.get("/api/cart/fetchcart");
+    const response = await axios.get("/api/cart/fetchcart");
 
-      if (response.data.success) {
-        console.log(response.data.items);
+    if (response.data.success) {
+      console.log(response.data.items);
 
-        setProducts(response.data.items);
-        setLoading(false);
-      } else {
-        console.log("error fetching cart from DB", response.data.error);
-      }
-    } else if (status == "loading") {
-      console.log("Waiting for status");
+      setProducts(response.data.items);
+      setLoading(false);
     } else {
-      console.log("looking for localstorage");
+      console.log("error fetching cart from DB", response.data.error);
     }
   }
 

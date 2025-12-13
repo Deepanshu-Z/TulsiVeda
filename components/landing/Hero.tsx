@@ -2,7 +2,7 @@ import { ArrowDownRight, Star } from "lucide-react";
 
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-
+import nutrivya from "@/public/nutrivya.png";
 interface Hero3Props {
   heading?: string;
   description?: string;
@@ -119,7 +119,7 @@ const Hero = ({
         </div>
         <div className="flex">
           <img
-            src="https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-1.svg"
+            src="/nutrivya.png"
             alt="placeholder hero"
             className="max-h-[600px] w-full rounded-md object-cover lg:max-h-[800px]"
           />

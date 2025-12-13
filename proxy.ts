@@ -3,12 +3,31 @@ import { getToken } from "next-auth/jwt";
 const secret = process.env.NEXTAUTH_SECRET;
 
 export async function proxy(req: NextRequest) {
+  const { pathname } = req.nextUrl;
   const token = await getToken({ req });
-  if (token?.role != "admin") {
-    return NextResponse.redirect(new URL("/", req.url));
+
+  // 🔐 Admin routes
+  if (pathname.startsWith("/admin")) {
+    if (token?.role !== "admin") {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
   }
+
+  // 🛒 Cart route (different condition)
+  if (pathname === "/cart") {
+    if (!token) {
+      return NextResponse.redirect(new URL("/auth/getstarted", req.url));
+    }
+  }
+
+  if (pathname === "/details") {
+    if (token?.name) {
+      return NextResponse.redirect("/");
+    }
+  }
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: "/admin/:path*",
+  matcher: ["/admin/:path*", "/cart/:path*"],
 };

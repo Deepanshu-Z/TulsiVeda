@@ -4,13 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { updateUserName } from "./action";
 
 export default function Page() {
   const [uname, setUname] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
-  const session = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
 
   return (
@@ -19,11 +19,8 @@ export default function Page() {
         onSubmit={async (e) => {
           e.preventDefault();
 
-          if (session.status === "authenticated") {
-            const response = await updateUserName(
-              session.data?.user?.email!,
-              uname
-            );
+          if (status === "authenticated") {
+            const response = await updateUserName(session?.user?.email!, uname);
 
             if (response.success) {
               setErrorMsg("");

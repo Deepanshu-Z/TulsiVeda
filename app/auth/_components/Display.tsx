@@ -9,11 +9,12 @@ import { useState } from "react";
 
 export default function Display() {
   const [email, setEmail] = useState("");
-
+  const [loading, setLoading] = useState<boolean>(false);
   return (
     <section className="flex min-h-screen bg-zinc-50 px-4 py-16 md:py-32 dark:bg-transparent">
       <form
         onSubmit={async (e) => {
+          setLoading(true);
           e.preventDefault();
           await signIn("email", {
             email,
@@ -91,9 +92,24 @@ export default function Display() {
               />
             </div>
 
-            <Button type="submit" className="w-full">
-              Continue
+            <Button
+              disabled={loading}
+              type="submit"
+              className="cursor-pointer w-full"
+            >
+              {loading ? "Please Check your mail" : "Continue"}
             </Button>
+            {loading ? (
+              <Button
+                className="w-full"
+                variant={"outline"}
+                onClick={() => setLoading(false)}
+              >
+                click here to resend
+              </Button>
+            ) : (
+              ""
+            )}
           </div>
         </div>
       </form>
