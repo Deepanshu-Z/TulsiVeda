@@ -1,3 +1,4 @@
+"use client";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ProductType } from "../page";
 import { Button } from "@/components/ui/button";
@@ -7,16 +8,18 @@ import { useSession } from "next-auth/react";
 import { useDebouncedCallback } from "use-debounce";
 import axios from "axios";
 import EmptyCartPage from "./EmptyCart";
+import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 type PropType = {
   loading: boolean;
   products: ProductType[];
   setProducts: Dispatch<SetStateAction<ProductType[]>>;
 };
-
 export type Details = {
   cartItemId: string;
   productId: number;
 };
+
 export const CartItems = ({ loading, products, setProducts }: PropType) => {
   const [coupon, setCoupon] = useState<boolean>(false);
   const [totalAmount, setTotalAmount] = useState(0);
@@ -25,6 +28,7 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
     cartItemId: "",
     productId: 0,
   });
+  const router = useRouter();
   const { data: session, status } = useSession();
   useEffect(() => {
     const total = products.reduce((sum, p) => {
@@ -99,10 +103,16 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
     );
 
   return (
-    <div className="lg:max-w-5xl max-lg:max-w-2xl mx-auto  ">
+    <div className="overflow-x-hidden lg:max-w-5xl max-lg:max-w-2xl mx-auto  ">
       <div className="grid w-screen lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2    p-6 rounded-md">
-          <h3 className="text-lg font-semibold text-slate-900">Your Cart</h3>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" onClick={() => router.back()}>
+              <ArrowLeft className="cursor-pointer " />
+            </Button>
+            {/* <p className=" font-semibold text-slate-900 ">Back to Home</p> */}
+            <h3 className="text-lg font-semibold text-slate-900 ">Your Cart</h3>
+          </div>
           <hr className="border-gray-300 mt-4 mb-8" />
 
           {products.map((p: ProductType, i: number) => {

@@ -21,7 +21,7 @@ export default function EmptyCartPage() {
           </p>
 
           <Link href="/">
-            <Button className="w-full">Continue Shopping</Button>
+            <Button className="cursor-pointer w-full">Continue Shopping</Button>
           </Link>
         </CardContent>
       </Card>

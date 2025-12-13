@@ -1,10 +1,11 @@
 "use client";
 import Link from "next/link";
 import { Logo } from "@/components/landing/logo";
-import { Menu, X } from "lucide-react";
+import { Menu, ShoppingCart, User, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import React from "react";
 import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
 
 const menuItems = [
   { name: "Features", href: "#link" },
@@ -16,7 +17,7 @@ const menuItems = [
 export const Header = () => {
   const [menuState, setMenuState] = React.useState(false);
   const [isScrolled, setIsScrolled] = React.useState(false);
-
+  const { data: session, status } = useSession();
   React.useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -87,22 +88,29 @@ export const Header = () => {
                   ))}
                 </ul>
               </div>
-              <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+              <div className="flex w-full flex-col items-center  space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+                {status === "authenticated" ? (
+                  <Link href={"/profile"}>
+                    <User />
+                  </Link>
+                ) : (
+                  ""
+                )}
+
+                <Link
+                  href={
+                    status === "authenticated" ? "/cart" : "/auth/getstarted"
+                  }
+                >
+                  <ShoppingCart />
+                </Link>
+
                 <Button
                   asChild
                   size="sm"
                   className={cn(isScrolled && "lg:hidden")}
                 >
                   <Link href="/auth/getstarted">
-                    <span>Get Started</span>
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  size="sm"
-                  className={cn(isScrolled ? "lg:inline-flex" : "hidden")}
-                >
-                  <Link href="#">
                     <span>Get Started</span>
                   </Link>
                 </Button>
