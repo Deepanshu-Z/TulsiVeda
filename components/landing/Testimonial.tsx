@@ -7,91 +7,174 @@ type Testimonial = {
   image: string;
   quote: string;
 };
-
 const testimonials: Testimonial[] = [
   {
-    name: "Jonathan Yombo",
-    role: "Software Engineer",
-    image: "https://randomuser.me/api/portraits/men/1.jpg",
+    name: "Aakash Verma",
+    role: "Gym Beginner",
+    image: "https://randomuser.me/api/portraits/men/61.jpg",
     quote:
-      "Tailus is really extraordinary and very practical, no need to break your head. A real gold mine.",
+      "I started using the weight gainer because I struggled to meet my daily calorie intake. It blends easily, tastes decent, and fits well into my routine when paired with regular workouts and proper meals.",
   },
   {
-    name: "Yves Kalume",
-    role: "GDE - Android",
-    image: "https://randomuser.me/api/portraits/men/6.jpg",
+    name: "Rohan Iyer",
+    role: "Fitness Enthusiast",
+    image: "https://randomuser.me/api/portraits/men/62.jpg",
     quote:
-      "With no experience in webdesign I just redesigned my entire website in a few minutes with tailwindcss thanks to Tailus.",
+      "The fat burner works best for me as a supporting supplement. I use it along with cardio and strength training, and it helps me stay more focused during workouts without any extreme effects.",
   },
   {
-    name: "Yucel Faruksahan",
-    role: "Tailkits Creator",
-    image: "https://randomuser.me/api/portraits/men/7.jpg",
+    name: "Neeraj Singh",
+    role: "Working Professional",
+    image: "https://randomuser.me/api/portraits/men/63.jpg",
     quote:
-      "Great work on tailfolio template. This is one of the best personal website that I have seen so far :)",
+      "With a busy work schedule, maintaining proper nutrition is difficult. This weight gainer helps me stay consistent on days when full meals are hard to manage.",
   },
   {
-    name: "Anonymous author",
-    role: "Doing something",
-    image: "https://randomuser.me/api/portraits/men/8.jpg",
+    name: "Simran Kaur",
+    role: "Lifestyle Fitness User",
+    image: "https://randomuser.me/api/portraits/women/64.jpg",
     quote:
-      "I am really new to Tailwind and I want to give a go to make some page on my own. I searched a lot of hero pages and blocks online. However, most of them are not giving me a clear view or needed some HTML/CSS coding background to make some changes from the original or too expensive to have. I downloaded the one of Tailus template which is very clear to understand at the start and you could modify the codes/blocks to fit perfectly on your purpose of the page.",
+      "I like products that are honest about results. This one supports an active lifestyle when used responsibly with balanced food and regular physical activity.",
   },
   {
-    name: "Shekinah Tshiokufila",
-    role: "Senior Software Engineer",
-    image: "https://randomuser.me/api/portraits/men/4.jpg",
+    name: "Karthik R",
+    role: "Regular Gym Goer",
+    image: "https://randomuser.me/api/portraits/men/65.jpg",
     quote:
-      "Tailus is redefining the standard of web design, with these blocks it provides an easy and efficient way for those who love beauty but may lack the time to implement it. I can only recommend this incredible wonder.",
+      "The fat burner complements my workout routine. It’s not a shortcut, but when combined with training and discipline, it fits well into my fitness plan.",
   },
   {
-    name: "Oketa Fred",
-    role: "Fullstack Developer",
-    image: "https://randomuser.me/api/portraits/men/2.jpg",
+    name: "Pankaj Mehta",
+    role: "Athlete",
+    image: "https://randomuser.me/api/portraits/men/66.jpg",
     quote:
-      "I absolutely love Tailus! The component blocks are beautifully designed and easy to use, which makes creating a great-looking website a breeze.",
+      "I use the weight gainer post-workout to support my nutrition goals. It’s convenient, easy to digest, and helps me stay consistent during intense training phases.",
   },
   {
-    name: "Zeki",
-    role: "Founder of ChatExtend",
-    image: "https://randomuser.me/api/portraits/men/5.jpg",
+    name: "Anjali Sharma",
+    role: "Active Lifestyle User",
+    image: "https://randomuser.me/api/portraits/women/67.jpg",
     quote:
-      "Using TailsUI has been like unlocking a secret design superpower. It's the perfect fusion of simplicity and versatility, enabling us to create UIs that are as stunning as they are user-friendly.",
+      "I appreciate that the product focuses on supporting a routine rather than promising instant results. It works best when paired with mindful eating and exercise.",
   },
   {
-    name: "Joseph Kitheka",
-    role: "Fullstack Developer",
-    image: "https://randomuser.me/api/portraits/men/9.jpg",
+    name: "Mohit Bansal",
+    role: "Fitness Hobbyist",
+    image: "https://randomuser.me/api/portraits/men/68.jpg",
     quote:
-      "Tailus has transformed the way I develop web applications. Their extensive collection of UI components, blocks, and templates has significantly accelerated my workflow. The flexibility to customize every aspect allows me to create unique user experiences. Tailus is a game-changer for modern web development!",
+      "Simple, clean supplement. It doesn’t claim miracles, but it helps maintain consistency, which is what actually matters in the long run.",
   },
   {
-    name: "Khatab Wedaa",
-    role: "MerakiUI Creator",
-    image: "https://randomuser.me/api/portraits/men/10.jpg",
+    name: "Ritika Joshi",
+    role: "Wellness-Focused User",
+    image: "https://randomuser.me/api/portraits/women/69.jpg",
     quote:
-      "Tailus is an elegant, clean, and responsive tailwind css components it's very helpful to start fast with your project.",
+      "The fat burner fits nicely into my routine. I use it responsibly along with regular workouts and proper hydration.",
   },
   {
-    name: "Rodrigo Aguilar",
-    role: "TailwindAwesome Creator",
-    image: "https://randomuser.me/api/portraits/men/11.jpg",
+    name: "Saurabh Jain",
+    role: "Recreational Athlete",
+    image: "https://randomuser.me/api/portraits/men/70.jpg",
     quote:
-      "I love Tailus ❤️. The component blocks are well-structured, simple to use, and beautifully designed. It makes it really easy to have a good-looking website in no time.",
+      "The weight gainer is convenient and easy to include in my daily nutrition plan. It helps me stay on track without feeling heavy.",
   },
   {
-    name: "Eric Ampire",
-    role: "Mobile Engineer at @BRPNews • @GoogleDevExpert for Android",
-    image: "https://randomuser.me/api/portraits/men/12.jpg",
+    name: "Nikhil Arora",
+    role: "Corporate Professional",
+    image: "https://randomuser.me/api/portraits/men/71.jpg",
     quote:
-      "Tailus templates are the perfect solution for anyone who wants to create a beautiful and functional website without any web design experience. The templates are easy to use, customizable, and responsive, and the support team is always available to help. I highly recommend Tailus templates to anyone who is looking to create a website.",
+      "Long office hours make consistent meals difficult. This product helps bridge the gap when used along with proper food choices.",
   },
   {
-    name: "Roland Tubonge",
-    role: "Software Engineer",
-    image: "https://randomuser.me/api/portraits/men/13.jpg",
+    name: "Priya Malhotra",
+    role: "Fitness Learner",
+    image: "https://randomuser.me/api/portraits/women/72.jpg",
     quote:
-      "Tailus is so well designed that even with a very poor knowledge of web design you can do miracles. Let yourself be seduced!",
+      "I am still learning about fitness, and I like that this product supports the journey instead of pushing unrealistic expectations.",
+  },
+  {
+    name: "Abhishek Yadav",
+    role: "Gym Regular",
+    image: "https://randomuser.me/api/portraits/men/73.jpg",
+    quote:
+      "Used consistently with training, the weight gainer supports my daily intake goals. No discomfort and easy to manage.",
+  },
+  {
+    name: "Shreya Sen",
+    role: "Health-Conscious User",
+    image: "https://randomuser.me/api/portraits/women/74.jpg",
+    quote:
+      "I prefer supplements that encourage balance. This one complements my lifestyle without extreme claims.",
+  },
+  {
+    name: "Varun Kapoor",
+    role: "Strength Training User",
+    image: "https://randomuser.me/api/portraits/men/75.jpg",
+    quote:
+      "The product fits well into my post-workout routine and supports my nutrition goals when used consistently.",
+  },
+  {
+    name: "Ishita Roy",
+    role: "Active Individual",
+    image: "https://randomuser.me/api/portraits/women/76.jpg",
+    quote:
+      "It’s easy to include in daily life. Works best when combined with proper food, hydration, and movement.",
+  },
+  {
+    name: "Harsh Vardhan",
+    role: "Beginner Athlete",
+    image: "https://randomuser.me/api/portraits/men/77.jpg",
+    quote:
+      "This helped me build a routine instead of chasing quick results. Consistency feels easier now.",
+  },
+  {
+    name: "Megha Choudhary",
+    role: "Wellness User",
+    image: "https://randomuser.me/api/portraits/women/78.jpg",
+    quote:
+      "I value transparency in supplements. This one fits nicely into a balanced, health-focused lifestyle.",
+  },
+  {
+    name: "Ritesh Kulkarni",
+    role: "Fitness Explorer",
+    image: "https://randomuser.me/api/portraits/men/79.jpg",
+    quote:
+      "The fat burner supports my workout days when used responsibly. No harsh effects, just steady support.",
+  },
+  {
+    name: "Kavya Nair",
+    role: "Lifestyle User",
+    image: "https://randomuser.me/api/portraits/women/80.jpg",
+    quote:
+      "I like that it encourages discipline and consistency rather than shortcuts.",
+  },
+  {
+    name: "Arjun Malhotra",
+    role: "Gym Enthusiast",
+    image: "https://randomuser.me/api/portraits/men/81.jpg",
+    quote:
+      "The weight gainer blends smoothly and supports my calorie intake goals alongside training.",
+  },
+  {
+    name: "Neha Jain",
+    role: "Health-Oriented User",
+    image: "https://randomuser.me/api/portraits/women/82.jpg",
+    quote:
+      "Used sensibly with diet and exercise, it complements a healthy routine.",
+  },
+  {
+    name: "Siddharth Rao",
+    role: "Recreational Fitness User",
+    image: "https://randomuser.me/api/portraits/men/83.jpg",
+    quote:
+      "Overall, a practical supplement that supports consistency and routine building.",
+  },
+  {
+    name: "Pallavi Deshmukh",
+    role: "Active Lifestyle Professional",
+    image: "https://randomuser.me/api/portraits/women/84.jpg",
+    quote:
+      "I prefer realistic products. This one fits well into my daily schedule when paired with mindful habits.",
   },
 ];
 
@@ -126,8 +209,11 @@ export default function Testimonial() {
             {testimonialChunks.map((chunk, chunkIndex) => (
               <div key={chunkIndex} className="space-y-3">
                 {chunk.map(({ name, role, quote, image }, index) => (
-                  <Card key={index}>
-                    <CardContent className="grid grid-cols-[auto_1fr] gap-3 pt-6">
+                  <Card
+                    className="cursor-pointer hover:scale-120 transition-transform"
+                    key={index}
+                  >
+                    <CardContent className=" grid grid-cols-[auto_1fr] gap-3 pt-6">
                       <Avatar className="size-9">
                         <AvatarImage
                           alt={name}

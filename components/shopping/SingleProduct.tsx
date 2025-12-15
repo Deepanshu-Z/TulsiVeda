@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import getproductdetails from "./actions/getproductdetals";
 import { string } from "zod";
 import AddToCart from "@/components/shopping/components/AddToCart";
+import he from "he";
 
 export type Product = {
   id: string;
@@ -57,6 +58,7 @@ export default function SingleProduct({ id }: { id: string }) {
     }
     fetchProduct();
   }, []);
+
   const handleCart = async () => {};
   if (loading) {
     return (
@@ -118,7 +120,7 @@ export default function SingleProduct({ id }: { id: string }) {
 
       {/* PRODUCT DETAILS */}
       <div className="mt-12">
-        <Tabs defaultValue="description">
+        <Tabs defaultValue="specs">
           <TabsList>
             <TabsTrigger value="description">Description</TabsTrigger>
             <TabsTrigger value="specs">Specifications</TabsTrigger>
@@ -132,14 +134,11 @@ export default function SingleProduct({ id }: { id: string }) {
                 <h3 className="text-lg font-semibold text-foreground">
                   Product Description
                 </h3>
-
-                <div className="relative overflow-hidden rounded-lg border bg-muted">
-                  <iframe
-                    className="w-full h-[400px] bg-background"
-                    srcDoc={product?.description}
-                    sandbox="allow-same-origin allow-scripts"
-                  />
-                </div>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: he.decode(product?.description ?? ""),
+                  }}
+                />
               </CardContent>
             </Card>
           </TabsContent>
