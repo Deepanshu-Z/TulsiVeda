@@ -28,7 +28,7 @@ export default function Products() {
               <CardContent className="p-6 space-y-6">
                 <div className="overflow-hidden rounded-2xl">
                   <img
-                    src="/nutrivya.png"
+                    src="https://res.cloudinary.com/dwrp1rgdi/image/upload/v1765780897/nutrivya_bmxqor.png"
                     alt="Product 1"
                     width={400}
                     height={400}
@@ -62,7 +62,7 @@ export default function Products() {
               <CardContent className="p-6 space-y-6">
                 <div className="overflow-hidden rounded-2xl">
                   <Image
-                    src="/nutrivya2.png"
+                    src="https://res.cloudinary.com/dwrp1rgdi/image/upload/v1765780898/nutrivya2_titil6.png"
                     alt="Product 2"
                     width={600}
                     height={500}

@@ -1,10 +1,16 @@
 import {
   BatteryCharging,
+  Flame,
   GitPullRequest,
+  HeartPulse,
   Layers,
+  Leaf,
   RadioTower,
+  ShieldCheck,
   SquareKanban,
+  TrendingUp,
   WandSparkles,
+  Activity,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -19,52 +25,48 @@ interface Feature {
 interface Feature43Props {
   title?: string;
   features?: Feature[];
-  buttonText?: string;
-  buttonUrl?: string;
 }
 
 const Features = ({
-  title = "Fully featured components for Shadcn UI & Tailwind",
+  title = "Ayurvedic support for weight and wellness",
   features = [
     {
-      heading: "Quality",
+      heading: "Metabolism Support",
       description:
-        "Built with attention to detail and best practices. Every component is thoroughly tested and follows modern React patterns for reliability and performance.",
-      icon: <GitPullRequest className="size-6" />,
+        "Formulated with traditional Ayurvedic ingredients such as Ashwagandha, Pipli, and Vidanga to support metabolism and daily energy as part of an active lifestyle.",
+      icon: <Flame className="size-6" />,
     },
     {
-      heading: "Experience",
+      heading: "Nutrition for Healthy Weight",
       description:
-        "Crafted with user experience in mind. Each component is designed to be intuitive, accessible, and provide smooth interactions across all devices.",
-      icon: <SquareKanban className="size-6" />,
+        "Includes Shatavari, Amla, and Gokhru to support nourishment, appetite, and overall body maintenance when combined with proper diet and training.",
+      icon: <TrendingUp className="size-6" />,
     },
     {
-      heading: "Support",
+      heading: "Ayurvedic Ingredients",
       description:
-        "Comprehensive documentation and community support. Get help when you need it with detailed guides, examples, and active community assistance.",
-      icon: <RadioTower className="size-6" />,
+        "Made with carefully selected Ayurvedic herbs traditionally used to support overall wellness and daily nutrition.",
+      icon: <Leaf className="size-6" />,
     },
     {
-      heading: "Innovation",
+      heading: "Strength & Recovery Support",
       description:
-        "Cutting-edge design patterns and modern web technologies. Stay ahead with the latest trends in UI/UX design and development practices.",
-      icon: <WandSparkles className="size-6" />,
+        "Designed to support stamina, recovery, and physical performance as part of a consistent fitness routine.",
+      icon: <Activity className="size-6" />,
     },
     {
-      heading: "Results",
+      heading: "Digestive Support",
       description:
-        "Proven track record of successful implementations. These components have been battle-tested in real-world applications and deliver consistent results.",
-      icon: <Layers className="size-6" />,
+        "Traditional ingredients like Pipli and Vidanga are included to support digestion and nutrient absorption.",
+      icon: <HeartPulse className="size-6" />,
     },
     {
-      heading: "Efficiency",
+      heading: "Clean & Transparent Formula",
       description:
-        "Optimized for performance and developer productivity. Lightweight, fast-loading components that help you build faster without compromising on quality.",
-      icon: <BatteryCharging className="size-6" />,
+        "No steroids or synthetic additives. Designed to support long-term consistency when used responsibly.",
+      icon: <ShieldCheck className="size-6" />,
     },
   ],
-  buttonText = "More Features",
-  buttonUrl = "https://shadcnblocks.com",
 }: Feature43Props) => {
   return (
     <section className="pt-20 w-full pb-2">
@@ -78,7 +80,7 @@ const Features = ({
         )}
         <img
           className="w-full"
-          src="/ingredients.png"
+          src="https://res.cloudinary.com/dwrp1rgdi/image/upload/v1765779849/Untitled-design-_76_dnhkfz.png"
           alt="ingredients image"
         />
 

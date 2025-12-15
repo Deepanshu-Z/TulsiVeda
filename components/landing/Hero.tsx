@@ -119,7 +119,7 @@ const Hero = ({
         </div>
         <div className="flex">
           <img
-            src="/nutrivya.png"
+            src="https://res.cloudinary.com/dwrp1rgdi/image/upload/v1765780802/1_1_kzyejq.png"
             alt="placeholder hero"
             className="max-h-[600px] w-full rounded-md object-cover lg:max-h-[800px]"
           />
