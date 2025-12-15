@@ -80,7 +80,7 @@ const Features = ({
         )}
         <img
           className="w-full"
-          src="https://res.cloudinary.com/dwrp1rgdi/image/upload/v1765779849/Untitled-design-_76_dnhkfz.png"
+          src="https://res.cloudinary.com/dwrp1rgdi/image/upload/v1765791840/Untitled-design-_76_1312_vry854.webp"
           alt="ingredients image"
         />
 

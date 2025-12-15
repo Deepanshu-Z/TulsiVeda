@@ -3,6 +3,7 @@ import { ArrowDownRight, Star } from "lucide-react";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import nutrivya from "@/public/nutrivya.png";
+import Link from "next/link";
 interface Hero3Props {
   heading?: string;
   description?: string;
@@ -27,11 +28,11 @@ interface Hero3Props {
 }
 
 const Hero = ({
-  heading = "Blocks built with Shadcn & Tailwind",
-  description = "Finely crafted components built with React, Tailwind and Shadcn UI. Developers can copy and paste these blocks directly into their project.",
+  heading = "Ayurvedic Nutrition, Built for Modern Lifestyles",
+  description = "Thoughtfully formulated with traditional Ayurvedic ingredients to support daily nutrition, consistency, and an active way of living.",
   buttons = {
     primary: {
-      text: "Sign Up",
+      text: "Shop Now",
       url: "https://www.shadcnblocks.com",
     },
     secondary: {
@@ -41,36 +42,36 @@ const Hero = ({
   },
   reviews = {
     count: 200,
-    rating: 5.0,
+    rating: 5,
     avatars: [
       {
-        src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/avatar-1.webp",
+        src: "https://randomuser.me/api/portraits/men/61.jpg",
         alt: "Avatar 1",
       },
       {
-        src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/avatar-2.webp",
+        src: "https://randomuser.me/api/portraits/women/64.jpg",
         alt: "Avatar 2",
       },
       {
-        src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/avatar-3.webp",
+        src: "https://randomuser.me/api/portraits/women/67.jpg",
         alt: "Avatar 3",
       },
       {
-        src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/avatar-4.webp",
+        src: "https://randomuser.me/api/portraits/women/69.jpg",
         alt: "Avatar 4",
       },
       {
-        src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/avatar-5.webp",
+        src: "https://randomuser.me/api/portraits/women/72.jpg",
         alt: "Avatar 5",
       },
     ],
   },
 }: Hero3Props) => {
   return (
-    <section className="mx-10 pt-30 ">
+    <section className="mx-10 pt-20 ">
       <div className=" grid items-center gap-10 lg:grid-cols-2 lg:gap-20">
         <div className="mx-auto flex flex-col items-center text-center max-w-3xl lg:items-start lg:text-left">
-          <h1 className="my-6 text-pretty text-4xl font-bold lg:text-6xl xl:text-7xl">
+          <h1 className="my-6 text-pretty text-2xl font-bold md:text-3xl lg:text-4xl xl:text-7xl">
             {heading}
           </h1>
           <p className="text-muted-foreground mb-8 max-w-xl lg:text-xl">
@@ -101,20 +102,10 @@ const Hero = ({
               </p>
             </div>
           </div>
-          <div className="flex w-full flex-col justify-center gap-2 sm:flex-row lg:justify-start">
-            {buttons.primary && (
-              <Button asChild className="w-full sm:w-auto">
-                <a href={buttons.primary.url}>{buttons.primary.text}</a>
-              </Button>
-            )}
-            {buttons.secondary && (
-              <Button asChild variant="outline">
-                <a href={buttons.secondary.url}>
-                  {buttons.secondary.text}
-                  <ArrowDownRight className="size-4" />
-                </a>
-              </Button>
-            )}
+          <div className=" flex w-full flex-col justify-center gap-2 sm:flex-row lg:justify-start">
+            <Link href="#categories">
+              <Button className=" cursor-pointer ">Shop now</Button>
+            </Link>
           </div>
         </div>
         <div className="flex">
