@@ -1,13 +1,14 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
+import { Providers } from "@/app/providers";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main>
+      <main className="w-full h-screen">
         <SidebarTrigger />
-        {children}
+        <Providers>{children}</Providers>
       </main>
     </SidebarProvider>
   );

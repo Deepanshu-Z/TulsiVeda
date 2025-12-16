@@ -11,6 +11,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { drizzle } from "drizzle-orm/postgres-js";
 import type { AdapterAccountType } from "@auth/core/adapters";
+import { number } from "zod";
 export const rolesEnum = pgEnum("roles", ["user", "admin"]);
 export const categoryEnum = pgEnum("categories", [
   "Uncategorized",
@@ -23,6 +24,44 @@ export const cartStatusEnum = pgEnum("cart_status", [
   "active",
   "completed",
   "abandoned",
+]);
+export const states = pgEnum("states", [
+  "Andaman and Nicobar Islands",
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chandigarh",
+  "Chhattisgarh",
+  "Dadra and Nagar Haveli and Daman and Diu",
+  "Delhi",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jammu and Kashmir",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Ladakh",
+  "Lakshadweep",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Puducherry",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttarakhand",
+  "Uttar Pradesh",
+  "West Bengal",
 ]);
 
 export const users = pgTable("user", {
@@ -188,4 +227,20 @@ export const cartItems = pgTable("cartItems", {
   quantity: integer("quantity").notNull().default(1),
 });
 
-export default { users, products, cart, cartItems };
+export const addresses = pgTable("addresses", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id),
+  phoneNumber: varchar("phoneNumber", { length: 15 }).notNull(),
+  houseNumber: text("houseNumber").notNull(),
+  area: text("area").notNull(),
+  pincode: text("pincode").notNull(),
+  city: text("city").notNull(),
+  state: states().notNull(),
+  nearby: text("nearby"),
+  isDefault: boolean("isDefault").default(false),
+});
+export default { users, products, cart, cartItems, addresses };

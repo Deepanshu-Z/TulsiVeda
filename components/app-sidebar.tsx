@@ -12,7 +12,7 @@ import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 
 export function AppSidebar() {
-  const [active, setActive] = useState<string>("");
+  const [active, setActive] = useState<string>("orders");
   return (
     <Sidebar>
       <SidebarHeader>
