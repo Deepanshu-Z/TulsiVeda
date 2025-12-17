@@ -105,15 +105,17 @@ export const Header = () => {
                   <ShoppingCart />
                 </Link>
 
-                <Button
-                  asChild
-                  size="sm"
-                  className={cn(isScrolled && "lg:hidden")}
-                >
-                  <Link href="/auth/getstarted">
-                    <span>Get Started</span>
-                  </Link>
-                </Button>
+                {status === "unauthenticated" && (
+                  <Button
+                    asChild
+                    size="sm"
+                    className={cn(isScrolled && "lg:hidden")}
+                  >
+                    <Link href="/auth/getstarted">
+                      <span>Get Started</span>
+                    </Link>
+                  </Button>
+                )}
               </div>
             </div>
           </div>

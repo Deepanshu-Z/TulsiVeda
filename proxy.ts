@@ -25,9 +25,14 @@ export async function proxy(req: NextRequest) {
       return NextResponse.redirect("/");
     }
   }
+
+  if (pathname === "/profile" && !token) {
+    return NextResponse.redirect(new URL("/auth/getstarted", req.url));
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/cart/:path*"],
+  matcher: ["/admin/:path*", "/cart/:path*", "/profile/:path*"],
 };
