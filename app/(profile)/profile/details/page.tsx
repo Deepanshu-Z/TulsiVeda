@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import axios from "axios";
 
 type UserProfileProps = {
   name: string;
@@ -21,8 +23,12 @@ type UserProfileProps = {
 export default function UserProfile() {
   const { data: session, status } = useSession();
   const [user, setUser] = useState<UserProfileProps>();
+  const fetchUser = async () => {
+    const response = await axios.get("/api/userprofile/getuserdetails");
+  };
   useEffect(() => {
     if (status === "authenticated") {
+      fetchUser();
       setUser({
         name: session?.user?.name ?? "",
         email: session?.user?.email ?? "",
@@ -77,7 +83,9 @@ export default function UserProfile() {
             <p className="text-sm text-muted-foreground">
               Manage your saved delivery addresses
             </p>
-            <Button size="sm">Manage Addresses</Button>
+            <Link href={"/profile/addresses"}>
+              <Button size="sm">Manage Addresses</Button>
+            </Link>
           </section>
 
           <Separator />
