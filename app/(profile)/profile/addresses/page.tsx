@@ -82,7 +82,9 @@ export default function Address() {
                   <Phone className="h-4 w-4 text-muted-foreground" />
                   <span>{address.phoneNumber}</span>
                 </div>
-                <Badge variant="secondary">Default</Badge>
+                <Badge className="cursor-pointer" variant="secondary">
+                  to be updated soon (edit or delete)
+                </Badge>
               </div>
             </CardContent>
           </Card>

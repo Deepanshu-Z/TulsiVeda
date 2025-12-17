@@ -1,19 +1,25 @@
 import db from "@/db/db";
 import { addresses } from "@/db/schema";
 import { getServerSession } from "next-auth";
-import { NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
+import { NextRequest, NextResponse } from "next/server";
 import { success } from "zod";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   const data = await req.json();
-  const session = await getServerSession();
+  const token = await getToken({ req });
 
-  if (!session) return new Response("Unauthorized", { status: 401 });
-
-  console.log("@@@@@@@@@ID", data.id.id);
+  if (!token || !token.sub) {
+    return NextResponse.json(
+      { success: false, message: "Unauthorized" },
+      { status: 401 }
+    );
+  }
+  const id = token.sub;
+  console.log("@@@@@@@@@ID", id);
   try {
     const response = await db.insert(addresses).values({
-      userId: data.id.id,
+      userId: id,
       phoneNumber: data.phone,
       houseNumber: data.house,
       area: data.road,

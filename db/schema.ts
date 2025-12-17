@@ -241,6 +241,5 @@ export const addresses = pgTable("addresses", {
   city: text("city").notNull(),
   state: states().notNull(),
   nearby: text("nearby"),
-  isDefault: boolean("isDefault").default(false),
 });
 export default { users, products, cart, cartItems, addresses };

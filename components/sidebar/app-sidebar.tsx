@@ -6,13 +6,17 @@ import {
   SidebarGroup,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
+import NavUser from "./nav-user";
+import { useSession } from "next-auth/react";
 
 export function AppSidebar() {
   const [active, setActive] = useState<string>("orders");
+  const { data: session, status } = useSession();
+
   return (
     <Sidebar>
       <SidebarHeader>
@@ -22,7 +26,7 @@ export function AppSidebar() {
               <ArrowLeft />
             </Button>
           </Link>
-          <h2>Home</h2>
+          <h2 className="font-semibold">Home</h2>
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -116,7 +120,9 @@ export function AppSidebar() {
           </Link>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>My Profile</SidebarFooter>
+      <SidebarFooter>
+        <NavUser />
+      </SidebarFooter>
     </Sidebar>
   );
 }

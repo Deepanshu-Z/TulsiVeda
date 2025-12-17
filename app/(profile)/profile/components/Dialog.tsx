@@ -16,6 +16,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
 import { id } from "zod/v4/locales";
+import { useRouter } from "next/navigation";
+import { Loader } from "lucide-react";
+import * as z from "zod";
 
 const states = [
   "Andaman and Nicobar Islands",
@@ -55,8 +58,21 @@ const states = [
   "Uttar Pradesh",
   "West Bengal",
 ] as const;
-
+export const addressSchema = z.object({
+  phone: z.string().min(10, "Invalid phone number").max(15),
+  house: z.string().min(1, "House is required"),
+  road: z.string().min(1, "Area is required"),
+  pincode: z.string().length(6, "Invalid pincode"),
+  city: z.string().min(1, "City is required"),
+  state: z.string().min(1, "State is required"),
+  nearby: z.string().min(1, "Landmark is required"),
+});
 export function DialogDemo(id: any) {
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const [errors, setErrors] = React.useState<Record<string, string>>({});
+
+  const router = useRouter();
+
   const saveAdd = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -71,19 +87,31 @@ export function DialogDemo(id: any) {
       city: formData.get("city"),
       state: formData.get("state"),
     };
+    const parsed = addressSchema.safeParse(data);
+    if (!parsed.success) {
+      const fieldErrors = parsed.error.flatten().fieldErrors;
+      setErrors(
+        Object.fromEntries(
+          Object.entries(fieldErrors).map(([k, v]) => [k, v?.[0]])
+        )
+      );
+      return;
+    } else {
+      setLoading(true);
 
-    const response = await axios.post("/api/userprofile/addaddress", {
-      id,
-      phone: data.phone,
-      house: data.house,
-      road: data.road,
-      pincode: data.pincode,
-      city: data.city,
-      state: data.state,
-      nearby: data.nearby,
-    });
-    if (response.data.success) console.log("Successfully added");
-    else console.log("error", response.data.error);
+      const response = await axios.post("/api/userprofile/addaddress", {
+        id,
+        phone: data.phone,
+        house: data.house,
+        road: data.road,
+        pincode: data.pincode,
+        city: data.city,
+        state: data.state,
+        nearby: data.nearby,
+      });
+      if (response.data.success) router.replace("/profile");
+      else console.log("error", response.data.error);
+    }
   };
 
   return (
@@ -113,31 +141,49 @@ export function DialogDemo(id: any) {
                 placeholder="81238XXXXX"
                 required
               />
+              {errors.phone && (
+                <p className="text-sm text-red-500">{errors.phone}</p>
+              )}
             </div>
 
             <div className="grid gap-2">
               <Label htmlFor="house">House no./Building Name</Label>
               <Input id="house" name="house" required />
+              {errors.phone && (
+                <p className="text-sm text-red-500">{errors.house}</p>
+              )}
             </div>
 
             <div className="grid gap-2">
               <Label htmlFor="road">Road name/Area/Colony</Label>
               <Input id="road" name="road" required />
+              {errors.phone && (
+                <p className="text-sm text-red-500">{errors.road}</p>
+              )}
             </div>
 
             <div className="grid gap-2">
               <Label htmlFor="nearby">Nearby/Landmarks</Label>
               <Input id="nearby" name="nearby" required />
+              {errors.phone && (
+                <p className="text-sm text-red-500">{errors.road}</p>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="pincode">Pincode</Label>
                 <Input id="pincode" name="pincode" required />
+                {errors.phone && (
+                  <p className="text-sm text-red-500">{errors.pincode}</p>
+                )}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="city">City</Label>
                 <Input id="city" name="city" required />
+                {errors.phone && (
+                  <p className="text-sm text-red-500">{errors.city}</p>
+                )}
               </div>
             </div>
 
@@ -168,9 +214,15 @@ export function DialogDemo(id: any) {
                 Cancel
               </Button>
             </DialogClose>
-            <Button className="cursor-pointer" type="submit">
-              Save Address
-            </Button>
+            {loading ? (
+              <Button disabled={true}>
+                Wait <Loader className="animate-spin" />
+              </Button>
+            ) : (
+              <Button className="cursor-pointer" type="submit">
+                Save Address
+              </Button>
+            )}
           </DialogFooter>
         </form>
       </DialogContent>
