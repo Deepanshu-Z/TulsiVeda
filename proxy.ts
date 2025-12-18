@@ -14,19 +14,19 @@ export async function proxy(req: NextRequest) {
   }
 
   // 🛒 Cart route (different condition)
-  if (pathname === "/cart") {
+  if (pathname.startsWith("/cart")) {
     if (!token) {
       return NextResponse.redirect(new URL("/auth/getstarted", req.url));
     }
   }
 
-  if (pathname === "/details") {
+  if (pathname.startsWith("/details")) {
     if (token?.name) {
       return NextResponse.redirect("/");
     }
   }
 
-  if (pathname === "/profile" && !token) {
+  if (pathname.startsWith("/profile") && !token) {
     return NextResponse.redirect(new URL("/auth/getstarted", req.url));
   }
 

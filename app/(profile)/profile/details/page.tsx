@@ -5,16 +5,18 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import axios from "axios";
+import { PopoverDemo } from "./components/Popup";
+import SkeletonCard from "../components/Skeleton";
 
 type UserProfileProps = {
   name: string;
   email: string;
   image?: string | null;
-  authProvider: null | "google" | "magic-link";
+  role: null | "admin" | "user";
   phone?: string | null;
   createdAt: string;
   lastLogin?: string | null;
@@ -23,23 +25,29 @@ type UserProfileProps = {
 export default function UserProfile() {
   const { data: session, status } = useSession();
   const [user, setUser] = useState<UserProfileProps>();
+  const [loading, setLoading] = useState<boolean>(true);
   const fetchUser = async () => {
+    setLoading(true);
     const response = await axios.get("/api/userprofile/getuserdetails");
+    setUser({
+      name: session?.user?.name ?? "",
+      email: session?.user?.email ?? "",
+      image: session?.user?.image ?? null,
+      role: response.data.user[0].role,
+      phone: response.data.user[0].phone, // fetch later if stored separately
+      createdAt: response.data.user[0].createdAt.toLocaleString(),
+      lastLogin: new Date().toLocaleString(),
+    });
+    setLoading(false);
   };
   useEffect(() => {
     if (status === "authenticated") {
       fetchUser();
-      setUser({
-        name: session?.user?.name ?? "",
-        email: session?.user?.email ?? "",
-        image: session?.user?.image ?? null,
-        authProvider: null,
-        phone: null, // fetch later if stored separately
-        createdAt: new Date().toLocaleDateString(),
-        lastLogin: new Date().toLocaleString(),
-      });
     }
   }, [status]);
+
+  const addContact = () => {};
+  if (loading) return <SkeletonCard />;
   return (
     <div className="w-full h-full p-6">
       <Card className="w-full h-full">
@@ -55,13 +63,16 @@ export default function UserProfile() {
             </CardTitle>
             <p className="text-sm text-muted-foreground">{user?.email}</p>
             <Badge variant="secondary" className="mt-1">
-              {user?.authProvider === "google"
-                ? "Google Account"
-                : "Magic Link"}
+              {user?.role === "admin" ? "admin" : "user"}
             </Badge>
           </div>
 
-          <Button variant="outline">Logout</Button>
+          <Button
+            onClick={() => signOut({ callbackUrl: "/" })}
+            variant="outline"
+          >
+            Logout
+          </Button>
         </CardHeader>
 
         <Separator />
@@ -71,7 +82,16 @@ export default function UserProfile() {
           <section className="space-y-2">
             <h3 className="font-semibold">Contact</h3>
             <p className="text-sm text-muted-foreground">
-              Phone: {user?.phone ?? "Not added"}
+              {user?.phone ? (
+                <div>
+                  Phone: <p>{user?.phone}</p>
+                </div>
+              ) : (
+                <div className="flex gap-2 items-center">
+                  No contact found:
+                  <PopoverDemo />
+                </div>
+              )}
             </p>
           </section>
 
@@ -84,7 +104,9 @@ export default function UserProfile() {
               Manage your saved delivery addresses
             </p>
             <Link href={"/profile/addresses"}>
-              <Button size="sm">Manage Addresses</Button>
+              <Button variant={"outline"} size="sm">
+                Manage Addresses
+              </Button>
             </Link>
           </section>
 

@@ -11,8 +11,8 @@ export async function GET(req: NextRequest) {
   if (!userId) return new Response("Unauthorized", { status: 401 });
 
   try {
-    const response = await db.select().from(users).where(eq(users.id, userId));
-    return NextResponse.json({ message: "Fetched details", response });
+    const user = await db.select().from(users).where(eq(users.id, userId));
+    return NextResponse.json({ message: "Fetched details", user });
   } catch (error) {
     return NextResponse.json({
       error,
