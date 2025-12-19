@@ -1,70 +1,53 @@
 "use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useSession } from "next-auth/react";
-import SkeletonCard from "../components/Skeleton";
 import axios from "axios";
+import { useSession } from "next-auth/react";
+import { useForm, SubmitHandler } from "react-hook-form";
 
-/* ---------------- schema ---------------- */
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-});
+type Inputs = {
+  email: string;
+  subject: string;
+  content: string;
+};
 
-type FormValues = z.infer<typeof formSchema>;
+export default function App() {
+  const { data: session, status } = useSession();
+  //@ts-ignore
+  const userId = session?.user.id;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>();
 
-/* ---------------- component ---------------- */
-export default function Support() {
-  const { status } = useSession();
-
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      username: "",
-    },
-  });
-
-  const onSubmit = async (values: FormValues) => {
-    const response = await axios.post("/api/email/send", values);
-    console.log(response.data);
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    console.log(data);
+    const response = await axios.post("/api/email/send/auth", {
+      userEmail: data.email,
+      userId,
+      subject: data.subject,
+      content: data.content,
+      isVerified: true,
+    });
   };
 
-  if (status === "loading") return <SkeletonCard />;
-
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input placeholder="shadcn" {...field} />
-              </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Submit</Button>
+    <div>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div>
+          <input placeholder="example@gmail.com" {...register("email")} />
+          {errors.email && <span>Email</span>}
+        </div>
+        <div>
+          <input placeholder="subject" {...register("subject")} />
+          {errors.subject && <span>subject</span>}
+        </div>
+
+        <div>
+          <input placeholder="content" {...register("content")} />
+          {errors.content && <span>content</span>}
+        </div>
+        <input type="submit" />
       </form>
-    </Form>
+    </div>
   );
 }

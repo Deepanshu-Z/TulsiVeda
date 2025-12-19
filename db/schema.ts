@@ -12,6 +12,8 @@ import {
 import { drizzle } from "drizzle-orm/postgres-js";
 import type { AdapterAccountType } from "@auth/core/adapters";
 import { number } from "zod";
+
+///////////////////ENUMS//////////////////////////////
 export const rolesEnum = pgEnum("roles", ["user", "admin"]);
 export const categoryEnum = pgEnum("categories", [
   "Uncategorized",
@@ -64,6 +66,9 @@ export const states = pgEnum("states", [
   "West Bengal",
 ]);
 
+export const status = pgEnum("status", ["pending", "open", "completed"]);
+
+/////////////////////////TABLES///////////////////////////////////
 export const users = pgTable("user", {
   id: text("id")
     .primaryKey()
@@ -257,6 +262,7 @@ export const mails = pgTable("mails", {
 
   isVerified: boolean("is_verified").default(false),
 
+  status: status().default("pending"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
