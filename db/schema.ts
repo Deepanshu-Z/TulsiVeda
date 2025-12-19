@@ -244,4 +244,20 @@ export const addresses = pgTable("addresses", {
   state: states().notNull(),
   nearby: text("nearby"),
 });
-export default { users, products, cart, cartItems, addresses };
+
+export const mails = pgTable("mails", {
+  id: text("id").primaryKey(),
+
+  userEmail: text("user_email").notNull(),
+
+  userId: text("user_id").references(() => users.id),
+
+  subject: text("subject").notNull(),
+  content: text("content").notNull(),
+
+  isVerified: boolean("is_verified").default(false),
+
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export default { users, products, cart, cartItems, addresses, mails };

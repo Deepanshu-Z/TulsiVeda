@@ -1,10 +1,70 @@
 "use client";
-
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { useSession } from "next-auth/react";
 import SkeletonCard from "../components/Skeleton";
+import axios from "axios";
 
+/* ---------------- schema ---------------- */
+const formSchema = z.object({
+  username: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
+/* ---------------- component ---------------- */
 export default function Support() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: "",
+    },
+  });
+
+  const onSubmit = async (values: FormValues) => {
+    const response = await axios.post("/api/email/send", values);
+    console.log(response.data);
+  };
+
   if (status === "loading") return <SkeletonCard />;
-  return <div className="">support</div>;
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Username</FormLabel>
+              <FormControl>
+                <Input placeholder="shadcn" {...field} />
+              </FormControl>
+              <FormDescription>
+                This is your public display name.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit">Submit</Button>
+      </form>
+    </Form>
+  );
 }
