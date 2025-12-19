@@ -12,7 +12,7 @@ import axios from "axios";
 import { PopoverDemo } from "./components/Popup";
 import SkeletonCard from "../components/Skeleton";
 
-type UserProfileProps = {
+export type UserProfileProps = {
   name: string;
   email: string;
   image?: string | null;
@@ -24,7 +24,7 @@ type UserProfileProps = {
 
 export default function UserProfile() {
   const { data: session, status } = useSession();
-  const [user, setUser] = useState<UserProfileProps>();
+  const [user, setUser] = useState<UserProfileProps | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const fetchUser = async () => {
     setLoading(true);
@@ -92,6 +92,8 @@ export default function UserProfile() {
                   <PopoverDemo
                     //@ts-ignore
                     id={session?.user.id}
+                    setUser={setUser}
+                    user={user}
                   />
                 </div>
               )}

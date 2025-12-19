@@ -8,12 +8,21 @@ import {
 } from "@/components/ui/popover";
 import axios from "axios";
 import { useState } from "react";
+import { UserProfileProps } from "../page";
+import { LoaderCircle } from "lucide-react";
 
-export function PopoverDemo(id: any) {
+type Props = {
+  id: string;
+  setUser: React.Dispatch<React.SetStateAction<UserProfileProps | null>>;
+  user: UserProfileProps | null;
+};
+
+export function PopoverDemo({ id, setUser, user }: Props) {
   const [phone, setPhone] = useState<string>("");
   const [error, setError] = useState<string>("");
-
+  const [loading, setLoading] = useState<boolean>(false);
   const savePhone = async () => {
+    setLoading(true);
     if (phone.length == 10) {
       setError("");
       const response = await axios.put("/api/userprofile/savephone", {
@@ -22,10 +31,12 @@ export function PopoverDemo(id: any) {
       });
 
       if (response.data.success) {
-        location.reload();
+        setUser((prev) => (prev ? { ...prev, phone } : prev));
+        setLoading(false);
       }
     } else {
       setError("Phone number must be valid (10 digits)");
+      setLoading(false);
       return;
     }
   };
@@ -53,7 +64,11 @@ export function PopoverDemo(id: any) {
             </div>
           </div>
           <Button onClick={savePhone} variant={"default"}>
-            Save
+            {loading ? (
+              <LoaderCircle className="animate-spin" />
+            ) : (
+              <span>Save</span>
+            )}
           </Button>
           {error && <p className="text-red-500">{error}</p>}
         </div>

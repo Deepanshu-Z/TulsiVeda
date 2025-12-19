@@ -19,6 +19,7 @@ import { id } from "zod/v4/locales";
 import { useRouter } from "next/navigation";
 import { Loader } from "lucide-react";
 import * as z from "zod";
+import { Address } from "../addresses/page";
 
 const states = [
   "Andaman and Nicobar Islands",
@@ -67,7 +68,12 @@ export const addressSchema = z.object({
   state: z.string().min(1, "State is required"),
   nearby: z.string().min(1, "Landmark is required"),
 });
-export function DialogDemo(id: any) {
+type Props = {
+  id: string;
+  address: Address[];
+  setAddress: React.Dispatch<React.SetStateAction<Address[]>>;
+};
+export function DialogDemo({ id, setAddress, address }: Props) {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [errors, setErrors] = React.useState<Record<string, string>>({});
 
@@ -79,13 +85,13 @@ export function DialogDemo(id: any) {
     const formData = new FormData(e.currentTarget);
 
     const data = {
-      phone: formData.get("phone"),
-      house: formData.get("house"),
-      road: formData.get("road"),
-      nearby: formData.get("nearby"),
-      pincode: formData.get("pincode"),
-      city: formData.get("city"),
-      state: formData.get("state"),
+      phone: String(formData.get("phone") ?? ""),
+      house: String(formData.get("house") ?? ""),
+      road: String(formData.get("road") ?? ""),
+      nearby: String(formData.get("nearby") ?? ""),
+      pincode: String(formData.get("pincode") ?? ""),
+      city: String(formData.get("city") ?? ""),
+      state: String(formData.get("state") ?? ""),
     };
     const parsed = addressSchema.safeParse(data);
     if (!parsed.success) {
@@ -109,8 +115,21 @@ export function DialogDemo(id: any) {
         state: data.state,
         nearby: data.nearby,
       });
-      if (response.data.success) router.replace("/profile");
-      else console.log("error", response.data.error);
+      if (response.data.success) {
+        setAddress([
+          ...address,
+          {
+            phoneNumber: data.phone,
+            houseNumber: data.house,
+            area: data.road,
+            pincode: data.pincode,
+            city: data.city,
+            state: data.state,
+            nearby: data.nearby,
+            isDefault: true,
+          },
+        ]);
+      } else console.log("error", response.data.error);
     }
   };
 

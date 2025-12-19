@@ -16,7 +16,6 @@ export async function POST(req: NextRequest) {
     );
   }
   const id = token.sub;
-  console.log("@@@@@@@@@ID", id);
   try {
     const response = await db.insert(addresses).values({
       userId: id,

@@ -8,7 +8,7 @@ import { DialogDemo } from "../components/Dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin, Phone } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-type Address = {
+export type Address = {
   phoneNumber: string;
   houseNumber: string;
   area: string;
@@ -22,6 +22,7 @@ export default function Address() {
   const { data: session, status } = useSession();
   const [address, setAddress] = useState<Address[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+
   //@ts-ignore
   const userid = session?.user.id;
   async function fetchAddress() {
@@ -44,6 +45,8 @@ export default function Address() {
         <DialogDemo
           //@ts-ignore
           id={session?.user.id}
+          address={address}
+          setAddress={setAddress}
         />
       </div>
     );
@@ -90,7 +93,12 @@ export default function Address() {
           </Card>
         ))}
         <div className="m-10 cursor-pointer">
-          <DialogDemo />
+          <DialogDemo
+            //@ts-ignore
+            id={session?.user.id}
+            setAddress={setAddress}
+            address={address}
+          />
         </div>
       </div>
     );

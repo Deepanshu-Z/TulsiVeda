@@ -5,7 +5,12 @@ import { NextResponse } from "next/server";
 
 export async function PUT(req: Request) {
   const { phone, id } = await req.json();
-  const userId = id.id;
+  const userId = id;
+
+  console.log(userId, phone, id);
+  if (!userId || !phone)
+    return Response.json({ message: "send correct details" }, { status: 500 });
+
   try {
     const response = await db
       .update(users)
