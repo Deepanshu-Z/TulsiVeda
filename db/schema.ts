@@ -66,7 +66,12 @@ export const states = pgEnum("states", [
   "West Bengal",
 ]);
 
-export const status = pgEnum("status", ["pending", "open", "completed"]);
+export const status = pgEnum("status", [
+  "pending",
+  "open",
+  "completed",
+  "replied",
+]);
 
 /////////////////////////TABLES///////////////////////////////////
 export const users = pgTable("user", {
@@ -250,20 +255,21 @@ export const addresses = pgTable("addresses", {
   nearby: text("nearby"),
 });
 
-export const mails = pgTable("mails", {
-  id: text("id").primaryKey(),
-
-  userEmail: text("user_email").notNull(),
-
+export const ticket = pgTable("ticket", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").references(() => users.id),
-
-  subject: text("subject").notNull(),
-  content: text("content").notNull(),
-
-  isVerified: boolean("is_verified").default(false),
-
+  createdAt: timestamp("createdAt").defaultNow(),
   status: status().default("pending"),
-  createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const mails = pgTable("mails", {
+  id: text("id").primaryKey(),
+  ticketId: text("ticket_id").references(() => ticket.id),
+  userEmail: text("user_email").notNull(),
+  subject: text("subject").notNull(),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
 export default { users, products, cart, cartItems, addresses, mails };

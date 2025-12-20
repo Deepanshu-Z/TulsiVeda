@@ -43,11 +43,10 @@ export async function POST(req: Request) {
     console.log(mailId, typeof mailId);
     const response = await db.insert(mails).values({
       id: mailId,
-      userId: userId,
+      ticketId: "??????????",
       userEmail: userEmail,
       subject: subject,
       content: content,
-      isVerified: isVerified,
     });
 
     return NextResponse.json({
