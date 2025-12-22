@@ -3,7 +3,7 @@ import { render } from "@react-email/render";
 import EmailTemplate from "@/components/mail/email-template";
 import { NextResponse } from "next/server";
 import db from "@/db/db";
-import { mails } from "@/db/schema";
+import { chats } from "@/db/schema";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -11,19 +11,15 @@ export async function POST(req: Request) {
   const values = await req.json();
 
   const userEmail = values.userEmail;
-  const userId = values.userId;
-  const subject = values.subject;
+  // const subject = values.subject;
   const content = values.content;
-  const isVerified = values.isVerified;
+  const ticketId = values.ticketId;
 
-  if (!userEmail || !userId)
-    return Response.json("Unauthenticated", { status: 400 });
+  if (!userEmail) return Response.json("Unauthenticated", { status: 400 });
 
   const html = await render(
     EmailTemplate({
       userEmail,
-      userId,
-      subject,
       content,
     })
   );
@@ -32,7 +28,7 @@ export async function POST(req: Request) {
     const { data, error } = await resend.emails.send({
       from: `${process.env.EMAIL_FROM}`,
       to: [userEmail],
-      subject: subject,
+      subject: "Nutrivya Website - [Customer Support]",
       html,
     });
 
@@ -41,11 +37,10 @@ export async function POST(req: Request) {
     }
     const mailId = data.id;
     console.log(mailId, typeof mailId);
-    const response = await db.insert(mails).values({
+    const response = await db.insert(chats).values({
       id: mailId,
-      ticketId: "??????????",
+      ticketId: ticketId,
       userEmail: userEmail,
-      subject: subject,
       content: content,
     });
 

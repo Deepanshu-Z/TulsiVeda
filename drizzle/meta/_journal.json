@@ -127,6 +127,41 @@
       "when": 1766207846150,
       "tag": "0017_eager_shadowcat",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1766228631881,
+      "tag": "0018_sticky_butterfly",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1766385612354,
+      "tag": "0019_slow_captain_universe",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1766385708420,
+      "tag": "0020_superb_lifeguard",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1766397521991,
+      "tag": "0021_aromatic_blob",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1766404717170,
+      "tag": "0022_tan_punisher",
+      "breakpoints": true
     }
   ]
 }

@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Mail, Replies } from "../submitticket/page";
+import { Mail, Replies } from "../submitticket/[id]/page";
 
 type Props = {
   mails: Mail[];

@@ -260,16 +260,18 @@ export const ticket = pgTable("ticket", {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").references(() => users.id),
+  subject: text("subject").notNull(),
   createdAt: timestamp("createdAt").defaultNow(),
   status: status().default("pending"),
 });
 
-export const mails = pgTable("mails", {
+export const chats = pgTable("chats", {
   id: text("id").primaryKey(),
   ticketId: text("ticket_id").references(() => ticket.id),
   userEmail: text("user_email").notNull(),
-  subject: text("subject").notNull(),
   content: text("content").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
+  role: rolesEnum().notNull().default("user"),
 });
-export default { users, products, cart, cartItems, addresses, mails };
+
+export default { users, products, cart, cartItems, addresses, chats, ticket };
