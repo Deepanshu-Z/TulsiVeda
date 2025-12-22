@@ -14,7 +14,7 @@ import type { AdapterAccountType } from "@auth/core/adapters";
 import { number } from "zod";
 
 ///////////////////ENUMS//////////////////////////////
-export const rolesEnum = pgEnum("roles", ["user", "admin"]);
+export const rolesEnum = pgEnum("roles", ["user", "support", "admin"]);
 export const categoryEnum = pgEnum("categories", [
   "Uncategorized",
   "Health & Fitness",
@@ -271,7 +271,7 @@ export const chats = pgTable("chats", {
   userEmail: text("user_email").notNull(),
   content: text("content").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
-  role: rolesEnum().notNull().default("user"),
+  role: rolesEnum().notNull().default("support"),
 });
 
 export default { users, products, cart, cartItems, addresses, chats, ticket };

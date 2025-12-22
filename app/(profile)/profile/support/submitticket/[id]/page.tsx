@@ -11,6 +11,7 @@ type Chat = {
   id: string;
   content: string;
   createdAt: string;
+  role: string;
 };
 
 export default function Page() {
@@ -43,6 +44,7 @@ export default function Page() {
         id: crypto.randomUUID(),
         content,
         createdAt: new Date().toISOString(),
+        role: "user",
       },
     ]);
 
@@ -61,8 +63,21 @@ export default function Page() {
       {/* Messages area */}
       <div className="flex-1 overflow-y-auto p-4">
         {chats.map((c, i) => (
-          <div key={i}>
-            <p>{c.content}</p>
+          <div
+            key={c.id}
+            className={`flex  ${
+              c.role === "user" ? "justify-end" : "justify-start"
+            }`}
+          >
+            <div
+              className={`max-w-[70%] rounded-lg px-4 py-2 text-sm ${
+                c.role === "user"
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 text-black"
+              }`}
+            >
+              {c.content}
+            </div>
           </div>
         ))}
       </div>
