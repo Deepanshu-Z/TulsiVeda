@@ -1,5 +1,5 @@
 import db from "@/db/db";
-import { mails } from "@/db/schema";
+import { chats } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 
@@ -8,17 +8,16 @@ export async function GET() {
   try {
     const response = await db
       .select({
-        subject: mails.subject,
-        email: mails.userEmail,
-        content: mails.content,
-        createdAt: mails.createdAt,
+        email: chats.userEmail,
+        content: chats.content,
+        createdAt: chats.createdAt,
       })
-      .from(mails)
-      .where(eq(mails.userEmail, session?.user?.email!));
+      .from(chats)
+      .where(eq(chats.userEmail, session?.user?.email!));
 
     return Response.json({
       success: true,
-      mails: response,
+      chats: response,
     });
   } catch (error) {
     return Response.json({
