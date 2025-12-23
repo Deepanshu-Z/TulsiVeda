@@ -40,8 +40,14 @@ export default function ContactSection() {
     resolver: zodResolver(schema),
     mode: "onBlur",
   });
-  const onSubmit = () => {
-    // const response = axios;
+  const onSubmit = (formValues: any) => {
+    const response = axios.post("/api/email/contact-support", {
+      country: formValues.country,
+      userEmail: formValues.email,
+      content: formValues.message,
+      name: formValues.name,
+      subject: formValues.subject,
+    });
   };
   return (
     <section className="py-32">
