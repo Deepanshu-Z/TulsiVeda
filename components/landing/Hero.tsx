@@ -103,7 +103,7 @@ const Hero = ({
             </div>
           </div>
           <div className=" flex w-full flex-col justify-center gap-2 sm:flex-row lg:justify-start">
-            <Link href="#categories">
+            <Link href="/shop/categories">
               <Button className=" cursor-pointer ">Shop now</Button>
             </Link>
           </div>
