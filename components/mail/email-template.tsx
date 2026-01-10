@@ -13,11 +13,7 @@ export default function EmailTemplate({
 }: EmailTemplateProps) {
   return (
     <div>
-      <h1>Welcome, {userEmail}!</h1>
-      <p>Your details are as follows :-</p>
-      <p>
-        Content: <span>{content}</span>
-      </p>
+      <span>{content}</span>
     </div>
   );
 }

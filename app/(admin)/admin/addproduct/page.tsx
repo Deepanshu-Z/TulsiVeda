@@ -99,7 +99,7 @@ export default function App() {
   };
 
   return (
-    <section className="flex min-h-screen bg-zinc-50 px-1 py-16 md:py-32 dark:bg-transparent">
+    <section className="flex min-h-screen bg-zinc-50 px-1 dark:bg-transparent">
       <form
         className="bg-white  m-auto h-fit w-full max-w-xl overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]"
         onSubmit={handleSubmit((data) => saveProduct(data))}
