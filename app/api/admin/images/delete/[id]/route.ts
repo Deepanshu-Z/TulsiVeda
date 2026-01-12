@@ -10,18 +10,13 @@ export async function PATCH(
   const { id } = await params;
   const { data } = await req.json();
   const url = data.url;
+  console.log("SERVER SIDE : ", url, id);
   try {
     const result = await db
       .update(products)
       .set({
-        galleryImages: sql`
-    array_remove(
-      ${products.galleryImages}::text[],
-      ${url}::text
-    )
-  `,
+        galleryImages: sql`${products.galleryImages}::jsonb - ${url}::text`,
       })
-
       .where(eq(products.id, id));
 
     console.log("RESULTS ARE: ", result);

@@ -6,7 +6,6 @@ import type { ProductType } from "../../page";
 import SkeletonCard from "@/app/(profile)/profile/components/Skeleton";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import z from "zod";
 import {
   productSchema,
   categories,
@@ -15,24 +14,15 @@ import {
 import { LogoIcon } from "@/components/logo";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { RemoveFormatting, RemoveFormattingIcon } from "lucide-react";
-export default function Page() {
-  const [product, setProduct] = useState<ProductType | null>(null);
 
+export default function Page() {
+  ////////////////////////////VARIABLES ////////////////////////////////////////////
+  const [product, setProduct] = useState<ProductType | null>(null);
   const { id } = useParams<{ id: string }>();
   const {
     register,
@@ -47,6 +37,7 @@ export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
+  /////////////////////////////FUNCTIONS ////////////////////////////////////////////
   const handleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files ? Array.from(e.target.files) : [];
     setFiles(selected);
@@ -62,6 +53,7 @@ export default function Page() {
 
     fetchProduct();
   }, [id]);
+
   async function saveProduct(data: any) {
     // setLoading(true);
     console.log("@@@DATA", data);
@@ -76,6 +68,7 @@ export default function Page() {
     //   router.replace(`/shop/${id}`);
     // } else console.log("Please try again");
   }
+
   useEffect(() => {
     console.log("Images are: ", imageUrl);
     setLoading(false);
@@ -84,6 +77,7 @@ export default function Page() {
   useEffect(() => {
     if (!product) return;
 
+    console.log("GALLERY IMAGES ARE: ", product.galleryImages);
     reset({
       name: product.name,
       title: product.title,
@@ -160,9 +154,11 @@ export default function Page() {
 
     if (response.data.success) console.log("successfully deleted");
     else {
-      console.log(response.data.error);
+      console.log("ERROR", response.data.error);
     }
   };
+
+  // ///////////////////////////RENDERING ////////////////////////////////////////////
   if (!product) return <SkeletonCard />;
 
   return (
@@ -452,14 +448,14 @@ export default function Page() {
                       Uploading..
                     </Button>
                   ) : (
-                    <Button
+                    <button
                       type="button"
                       disabled={!files || loading}
                       onClick={uploadAll}
                       className="cursor-pointer px-4 py-2 bg-black text-white rounded"
                     >
                       Upload
-                    </Button>
+                    </button>
                   )}
 
                   <p>{errors.manufacturedDate?.message}</p>
