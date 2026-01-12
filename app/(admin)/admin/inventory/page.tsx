@@ -35,12 +35,12 @@ export type ProductType = {
 
   inStock: number;
 
-  allergens: string[];
-  ingredients: string[];
-  certifications: string[];
-  goal: string[];
+  allergens: string;
+  ingredients: string;
+  certifications: string;
+  goal: string;
 
-  galleryImages: string[];
+  galleryImages: string;
 
   manufacturedDate: string; // ISO
   expiryDate: string; // ISO
@@ -59,7 +59,7 @@ const page = () => {
   }, []);
 
   return (
-    <div className="grid grid-cols-2 gap-5">
+    <div className="grid grid-cols-2 gap-0">
       {products.map((product: any) => (
         <Card key={product.id} className="w-[320px]  overflow-hidden">
           {/* Image */}

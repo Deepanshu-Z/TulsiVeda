@@ -40,14 +40,6 @@ export default function Page() {
     reset,
   } = useForm({
     resolver: zodResolver(productSchema),
-    defaultValues: {
-      // Ensure the date is formatted as YYYY-MM-DD
-      expiryDate: product?.expiryDate,
-      manufacturedDate: product?.manufacturedDate,
-      category: product?.category,
-      name: product?.name,
-      title: product?.title,
-    },
   });
   const [files, setFiles] = useState<File[]>();
   const [imageUrl, setImageUrl] = useState<string[]>();
@@ -70,22 +62,23 @@ export default function Page() {
     fetchProduct();
   }, [id]);
   async function saveProduct(data: any) {
-    setLoading(true);
+    // setLoading(true);
     console.log("@@@DATA", data);
-    if (imageUrl) data.galleryImages = imageUrl;
-    const response = await axios.post("/api/admin/addproduct  ", data);
-    console.log(response.data);
-    if (response.data.success) {
-      console.log("product added!");
-      const id = response.data.id[0].id;
-      setLoading(false);
-      router.replace(`/shop/${id}`);
-    } else console.log("Please try again");
+    // if (imageUrl) data.galleryImages = imageUrl;
+    // const response = await axios.post("/api/admin/addproduct  ", data);
+    // console.log(response.data);
+    // if (response.data.success) {
+    //   console.log("product added!");
+    //   const id = response.data.id[0].id;
+    //   setLoading(false);
+    //   router.replace(`/shop/${id}`);
+    // } else console.log("Please try again");
   }
   useEffect(() => {
     console.log("Images are: ", imageUrl);
     setLoading(false);
   }, [imageUrl]);
+
   useEffect(() => {
     if (!product) return;
 
@@ -93,8 +86,31 @@ export default function Page() {
       name: product.name,
       title: product.title,
       category: product.category,
-      expiryDate: product.expiryDate.slice(0, 10),
+      expiryDate: product?.expiryDate?.slice(0, 10) ?? "",
       manufacturedDate: product.manufacturedDate.slice(0, 10),
+      price: product.price,
+      discountPrice: product.discountPrice,
+      description: product.description,
+      stock: product.inStock,
+      ingredients: Array.isArray(product.ingredients)
+        ? product.ingredients.join(", ")
+        : product.ingredients,
+      goal: Array.isArray(product.goal)
+        ? product.goal.join(", ")
+        : product.goal,
+      allergens: Array.isArray(product.allergens)
+        ? product.allergens.join(", ")
+        : product.allergens,
+      galleryImages: Array.isArray(product.galleryImages)
+        ? product.galleryImages.join(", ")
+        : product.galleryImages,
+      directions: Array.isArray(product.directions)
+        ? product.directions.join(", ")
+        : product.directions,
+      certifications: Array.isArray(product.certifications)
+        ? product.certifications.join(", ")
+        : product.certifications,
+      form: product.medicineType,
     });
   }, [product, reset]);
 
@@ -198,7 +214,6 @@ export default function Page() {
                     type="number"
                     {...register("price", { valueAsNumber: true })}
                     placeholder="Price"
-                    value={product.price}
                   />
                   <p>{errors.price?.message}</p>
                 </div>
@@ -216,7 +231,6 @@ export default function Page() {
                     type="number"
                     {...register("discountPrice", { valueAsNumber: true })}
                     placeholder="Discount"
-                    value={product.discountPrice}
                   />
                   <p>{errors.discountPrice?.message}</p>
                 </div>
@@ -233,7 +247,6 @@ export default function Page() {
                     type="number"
                     {...register("stock")}
                     placeholder="Stock"
-                    value={product.inStock}
                   />
                   <p>{errors.stock?.message}</p>
                 </div>
@@ -251,7 +264,6 @@ export default function Page() {
                     className="h-[200px]"
                     {...register("description")}
                     placeholder="Description"
-                    value={product.description}
                   />
                   <p>{errors.description?.message}</p>
                 </div>
@@ -269,7 +281,6 @@ export default function Page() {
                     id="goal"
                     {...register("goal")}
                     placeholder="Goal item 1 (required at least 1)"
-                    value={product.goal}
                   />
                   <p>{errors.goal?.message}</p>
                 </div>
@@ -286,7 +297,6 @@ export default function Page() {
                     id="ingredients"
                     {...register("ingredients")}
                     placeholder="Ingredient item 1"
-                    value={product.ingredients}
                   />
                   <p>{errors.ingredients?.message}</p>
                 </div>
@@ -303,7 +313,6 @@ export default function Page() {
                     id="allergens"
                     {...register("allergens")}
                     placeholder="Allergen item 1"
-                    value={product.allergens}
                   />
                   <p>{errors.allergens?.message}</p>
                 </div>
@@ -320,7 +329,6 @@ export default function Page() {
                     id="directions"
                     {...register("directions")}
                     placeholder="Directions"
-                    value={product.directions}
                   />
                   <p>{errors.directions?.message}</p>
                 </div>
@@ -337,7 +345,6 @@ export default function Page() {
                     id="certifications"
                     {...register("certifications")}
                     placeholder="Certification item 1"
-                    value={product.certifications}
                   />
                   <p>{errors.certifications?.message}</p>
                 </div>
@@ -355,7 +362,6 @@ export default function Page() {
                     id="expiryDate"
                     type="date"
                     {...register("expiryDate")}
-                    value={product.expiryDate}
                   />
                   <p>{errors.expiryDate?.message}</p>
                 </div>
@@ -372,7 +378,6 @@ export default function Page() {
                     id="manufacturedDate"
                     type="date"
                     {...register("manufacturedDate")}
-                    value={product.manufacturedDate}
                   />
                   <p>{errors.manufacturedDate?.message}</p>
                 </div>
@@ -384,20 +389,17 @@ export default function Page() {
               <div>
                 <div className="space-y-2">
                   <Label className=" block text-sm">Select a category</Label>
-                  <Select value={product.category} {...register("category")}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select a Category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        {categories.map((c, i) => (
-                          <SelectItem key={i} value={c}>
-                            {c}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                  <select
+                    {...register("category")}
+                    className="w-full border p-2"
+                  >
+                    <option value="">Select category</option>
+                    {categories.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
             </div>
@@ -406,20 +408,14 @@ export default function Page() {
               <div>
                 <div className="space-y-2">
                   <Label className=" block text-sm">Select medicine form</Label>
-                  <Select value={product.medicineType} {...register("form")}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        {form.map((f, i) => (
-                          <SelectItem key={i} value={f}>
-                            {f}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                  <select {...register("form")} className="w-full border p-2">
+                    <option value="">Select Medicine Type</option>
+                    {form.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
             </div>
@@ -459,10 +455,10 @@ export default function Page() {
 
             <div className="flex justify-center">
               {loading ? (
-                <Button>Adding..</Button>
+                <Button>Updating..</Button>
               ) : (
                 <Button disabled={loading} className="" type="submit">
-                  Add Product
+                  Update Product
                 </Button>
               )}
             </div>

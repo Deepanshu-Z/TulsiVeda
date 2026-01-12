@@ -58,6 +58,7 @@ export default function App() {
       router.replace(`/shop/${id}`);
     } else console.log("Please try again");
   }
+
   useEffect(() => {
     console.log("Images are: ", imageUrl);
     setLoading(false);
