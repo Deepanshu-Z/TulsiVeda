@@ -59,7 +59,10 @@ export default function Page() {
   async function updateProduct(data: any) {
     setLoading(true);
     if (imageUrl) data.galleryImages = imageUrl;
-    const response = await axios.put(`/api/admin/updateproduct/${id}`, data);
+    const response = await axios.put(
+      `/api/admin/products/updateproduct/${id}`,
+      data
+    );
     console.log(response.data);
     if (response.data.success) {
       const id = response.data.update[0].id;

@@ -49,7 +49,7 @@ export default function App() {
     setLoading(true);
     console.log("@@@DATA", data);
     if (imageUrl) data.galleryImages = imageUrl;
-    const response = await axios.post("/api/admin/addproduct  ", data);
+    const response = await axios.post("/api/admin/products/addproduct  ", data);
     console.log(response.data);
     if (response.data.success) {
       console.log("product added!");

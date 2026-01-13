@@ -49,7 +49,7 @@ export type ProductType = {
 const page = () => {
   const [products, setProducts] = useState<ProductType[]>([]);
   const fetchAllProducts = async () => {
-    const response = await axios.get("/api/admin/getallproducts");
+    const response = await axios.get("/api/admin/products/getallproducts");
     console.log(response.data.response);
     setProducts(response.data.response);
   };

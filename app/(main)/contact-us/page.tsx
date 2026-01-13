@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import axios from "axios";
+import { HomeIcon, Mail, Phone } from "lucide-react";
 
 export const schema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -130,6 +131,26 @@ export default function ContactSection() {
             </Button>
           </form>
         </Card>
+      </div>
+      <div className="flex gap-5">
+        <div>
+          <Card>
+            {" "}
+            <Phone /> +91 7982843838
+          </Card>
+        </div>
+        <div>
+          <Card>
+            <Mail />
+            support@tulsiveda.com
+          </Card>
+        </div>
+        <div>
+          <Card>
+            <HomeIcon />
+            West Vinod Nagar, Near Mandawali Metro
+          </Card>
+        </div>
       </div>
     </section>
   );

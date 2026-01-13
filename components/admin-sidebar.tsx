@@ -12,6 +12,7 @@ import {
   Store,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "./ui/button";
 
 const items = [
   {
@@ -47,7 +48,10 @@ export function AdminSidebar() {
   return (
     <aside className="w-64 border-r bg-background h-screen">
       {/* Header */}
-      <div className="h-16 flex items-center px-6 font-semibold">
+      <div className="gap-2 h-16 flex items-center px-6 font-semibold">
+        <Link href={"/"}>
+          <Button>Home</Button>
+        </Link>
         Admin Panel
       </div>
 
