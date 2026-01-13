@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Page() {
   ////////////////////////////VARIABLES ////////////////////////////////////////////
@@ -36,6 +37,7 @@ export default function Page() {
   const [imageUrl, setImageUrl] = useState<string[]>();
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
+  const [imageLoading, setImageLoading] = useState<boolean>(false);
 
   /////////////////////////////FUNCTIONS ////////////////////////////////////////////
   const handleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,30 +56,28 @@ export default function Page() {
     fetchProduct();
   }, [id]);
 
-  async function saveProduct(data: any) {
-    // setLoading(true);
+  async function updateProduct(data: any) {
+    setLoading(true);
     console.log("@@@DATA", data);
-    console.log("IMAGES DATA: ", product?.galleryImages);
-    // if (imageUrl) data.galleryImages = imageUrl;
-    // const response = await axios.post("/api/admin/addproduct  ", data);
-    // console.log(response.data);
-    // if (response.data.success) {
-    //   console.log("product added!");
-    //   const id = response.data.id[0].id;
-    //   setLoading(false);
-    //   router.replace(`/shop/${id}`);
-    // } else console.log("Please try again");
+    if (imageUrl) data.galleryImages = imageUrl;
+    const response = await axios.post("/api/admin/addproduct  ", data);
+    console.log(response.data);
+    if (response.data.success) {
+      console.log("product added!");
+      const id = response.data.id[0].id;
+      setLoading(false);
+      router.replace(`/shop/${id}`);
+    } else console.log("Please try again");
+    setLoading(false);
   }
 
   useEffect(() => {
-    console.log("Images are: ", imageUrl);
     setLoading(false);
   }, [imageUrl]);
 
   useEffect(() => {
     if (!product) return;
-
-    console.log("GALLERY IMAGES ARE: ", product.galleryImages);
+    setImageUrl(product.galleryImages);
     reset({
       name: product.name,
       title: product.title,
@@ -147,7 +147,8 @@ export default function Page() {
   };
 
   const removeProductImage = async (url: string) => {
-    console.log(url);
+    setImageLoading(true);
+    setImageUrl((prev) => prev?.filter((e) => e != url));
     const response = await axios.patch(`/api/admin/images/delete/${id}`, {
       data: { url },
     });
@@ -156,6 +157,7 @@ export default function Page() {
     else {
       console.log("ERROR", response.data.error);
     }
+    setImageLoading(false);
   };
 
   // ///////////////////////////RENDERING ////////////////////////////////////////////
@@ -166,7 +168,7 @@ export default function Page() {
       <section className="flex min-h-screen bg-zinc-50 px-1 dark:bg-transparent">
         <form
           className="bg-white  m-auto h-fit w-full max-w-xl overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]"
-          onSubmit={handleSubmit((data) => saveProduct(data))}
+          onSubmit={handleSubmit((data) => updateProduct(data))}
         >
           <div className="bg-card -m-px rounded-[calc(var(--radius)+.125rem)] border p-8 pb-6">
             {/* TOP DIV */}
@@ -459,29 +461,32 @@ export default function Page() {
                   )}
 
                   <p>{errors.manufacturedDate?.message}</p>
-                  {product.galleryImages.map((image) => (
-                    <div key={image} className="relative inline-block">
-                      <img
-                        src={image}
-                        height={200}
-                        width={200}
-                        alt=""
-                        className="rounded border"
-                      />
-
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute top-1 right-1"
-                        onClick={() => removeProductImage(image)}
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ))}
 
                   {/* <img src={product.galleryImages} height={200} width={200} /> */}
+                  {imageUrl?.map((image, index) => (
+                    <div key={index} className="relative inline-block">
+                      <div>
+                        <img
+                          src={image}
+                          height={200}
+                          width={200}
+                          alt=""
+                          className="rounded border"
+                        />
+
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="absolute top-1 right-1"
+                          onClick={() => removeProductImage(image)}
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                      {imageLoading ? <Skeleton /> : ""}
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>

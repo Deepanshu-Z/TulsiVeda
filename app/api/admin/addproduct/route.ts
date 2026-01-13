@@ -24,7 +24,6 @@ export async function POST(request: Request) {
     manufacturedDate,
     createdAt,
   } = await request.json();
-  console.log("@@@@@@@", galleryImages);
   const newExpiryDate = new Date(expiryDate);
   const newManufacturedDate = new Date(manufacturedDate);
 
