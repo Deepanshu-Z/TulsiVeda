@@ -69,7 +69,7 @@ export default function TicketsTable() {
             Status{" "}
             <select
               name="status"
-              value={selectedStatus} // ADD THIS - CONTROLLED COMPONENT
+              value={selectedStatus}
               onChange={(e) => fetchTicketsByCategories(e.target.value)}
               className="ml-2 border rounded px-2 py-1"
             >
@@ -88,7 +88,7 @@ export default function TicketsTable() {
         {tickets.length === 0 ? (
           <TableRow>
             <TableCell colSpan={3} className="text-center">
-              No tickets found
+              No {selectedStatus} tickets found
             </TableCell>
           </TableRow>
         ) : (

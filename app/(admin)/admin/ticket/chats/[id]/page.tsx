@@ -6,6 +6,8 @@ import axios from "axios";
 import { Loader } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import ChatPopup from "../components/ChatPopup";
+import { updateCategories } from "../../action/updateticket";
 
 type Chat = {
   id: string;
@@ -16,20 +18,28 @@ type Chat = {
 };
 
 export default function Page() {
+  ////////VARS///////////////////////////
   const [chats, setChats] = useState<Chat[]>([]);
   const [content, setContent] = useState("");
   const [btnLoading, setBtnLoading] = useState<boolean>();
   const [loading, setLoading] = useState<boolean>(true);
   const params = useParams();
-  const ticketId = params.id;
+  const ticketId = params.id as string;
 
+  ////////FUNCTIONS///////////////////////////
   const fetchAllChats = async () => {
+    //getting all chats
     setLoading(true);
     const { data } = await axios.get(
       `/api/userprofile/chats?ticketId=${ticketId}`
     );
     setChats(data.chats);
     setLoading(false);
+
+    //updating status to = "open"
+    const response = await axios.put(
+      `/api/admin/tickets/update/categories/?status=open&ticketId=${ticketId}`
+    );
   };
 
   //TO BE UPDATED
@@ -55,12 +65,14 @@ export default function Page() {
     });
     setBtnLoading(false);
     setContent("");
+    updateCategories(`${ticketId}`, "replied");
   };
 
   useEffect(() => {
     fetchAllChats();
   }, []);
 
+  ////////RENDERING///////////////////////////
   if (loading) return <SkeletonCard />;
   return (
     <div className="flex flex-col h-[90%]">
@@ -107,6 +119,8 @@ export default function Page() {
           >
             {btnLoading ? <Loader className="animate-spin" /> : "Reply"}
           </Button>
+
+          <ChatPopup ticketId={ticketId} />
         </div>
       </div>
     </div>

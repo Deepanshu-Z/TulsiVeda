@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
   const token = await getToken({ req });
   console.log(token);
   const values = await req.json();
-
+  console.log(values);
   const content = values.content;
   const ticketId = values.ticketId;
   const role = values.role;
