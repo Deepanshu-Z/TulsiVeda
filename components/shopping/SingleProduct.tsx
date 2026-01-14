@@ -47,13 +47,14 @@ export type Product = {
 export default function SingleProduct({ id }: { id: string }) {
   const [product, setProduct] = useState<Product>();
   const [loading, setLoading] = useState<boolean>(true);
-
+  const [selectedImage, setSelectedImage] = useState("");
   useEffect(() => {
     async function fetchProduct() {
       setLoading(true);
       const response = await getproductdetails(id);
       console.log(response);
       setProduct(response);
+      setSelectedImage(response.galleryImages[0]);
       setLoading(false);
     }
     fetchProduct();
@@ -75,15 +76,36 @@ export default function SingleProduct({ id }: { id: string }) {
       {/* PRODUCT IMAGES + INFO */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* LEFT: PRODUCT IMAGE */}
-        <Card className="overflow-hidden rounded-xl">
+        <Card className="overflow-hidden ">
+          {/* Main Image */}
           <CardContent className="p-0">
             <Image
-              src={product?.galleryImages[0] ?? "/placeholder.jpg"}
+              src={selectedImage}
               alt="Product Image"
               width={600}
               height={500}
-              className="object-cover w-full h-full"
+              className="w-full h-[400px] object-cover"
+              priority
             />
+          </CardContent>
+
+          {/* Thumbnails */}
+          <CardContent className="flex gap-2 p-3 overflow-x-auto">
+            {product?.galleryImages?.map((image, index) => (
+              <button
+                key={index}
+                className="border rounded-md overflow-hidden hover:ring-2 hover:ring-primary transition"
+                onClick={() => setSelectedImage(image)}
+              >
+                <Image
+                  src={image}
+                  alt={`Thumbnail ${index}`}
+                  width={80}
+                  height={80}
+                  className="object-cover w-20 h-20"
+                />
+              </button>
+            ))}
           </CardContent>
         </Card>
 
