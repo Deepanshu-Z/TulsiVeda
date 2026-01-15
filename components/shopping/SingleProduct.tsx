@@ -16,6 +16,8 @@ import getproductdetails from "./actions/getproductdetals";
 import { string } from "zod";
 import AddToCart from "@/components/shopping/components/AddToCart";
 import he from "he";
+import axios from "axios";
+import PayButton from "../payment/pay/PayButton";
 
 export type Product = {
   id: string;
@@ -45,9 +47,12 @@ export type Product = {
 };
 
 export default function SingleProduct({ id }: { id: string }) {
+  ////VARS..............................
   const [product, setProduct] = useState<Product>();
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedImage, setSelectedImage] = useState("");
+
+  ////FUNCTION/////////////..............................
   useEffect(() => {
     async function fetchProduct() {
       setLoading(true);
@@ -60,7 +65,7 @@ export default function SingleProduct({ id }: { id: string }) {
     fetchProduct();
   }, []);
 
-  const handleCart = async () => {};
+  ////RENDERING/////////////..............................
   if (loading) {
     return (
       <div className="p-10 space-y-4">
@@ -133,9 +138,7 @@ export default function SingleProduct({ id }: { id: string }) {
           <div className="space-y-3">
             <AddToCart id={id} />
 
-            <Button variant="outline" className="w-full">
-              Buy Now
-            </Button>
+            <PayButton productId={product?.id!} />
           </div>
         </div>
       </div>
