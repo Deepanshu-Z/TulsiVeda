@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-const AddToCart = (id: any) => {
+const AddToCart = ({ id }: { id: string }) => {
   const { data: session, status } = useSession();
   const [loading, setLoading] = useState<boolean>();
   const router = useRouter();
@@ -24,7 +24,7 @@ const AddToCart = (id: any) => {
         console.log("Not ok");
       }
     } else {
-      router.replace("/auth/getstarted");
+      router.replace(`/auth/getstarted/?path=/shop/${id}`);
     }
   }
 

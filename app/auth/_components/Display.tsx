@@ -5,11 +5,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 export default function Display() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState<boolean>(false);
+  const params = useSearchParams();
+  let path = params.get("path");
+  if (!path) path = "/";
+
   return (
     <section className="flex min-h-screen bg-zinc-50 px-4 py-16 md:py-32 dark:bg-transparent">
       <form
@@ -38,7 +43,7 @@ export default function Display() {
 
           <div className="mt-6">
             <Button
-              onClick={() => signIn("google", { callbackUrl: "/" })}
+              onClick={() => signIn("google", { callbackUrl: path })}
               type="button"
               variant="outline"
               className="w-full"

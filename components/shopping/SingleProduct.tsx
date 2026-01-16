@@ -18,6 +18,9 @@ import AddToCart from "@/components/shopping/components/AddToCart";
 import he from "he";
 import axios from "axios";
 import PayButton from "../payment/pay/PayButton";
+import { getToken } from "next-auth/jwt";
+import { getSession, useSession } from "next-auth/react";
+import Link from "next/link";
 
 export type Product = {
   id: string;
@@ -51,7 +54,7 @@ export default function SingleProduct({ id }: { id: string }) {
   const [product, setProduct] = useState<Product>();
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedImage, setSelectedImage] = useState("");
-
+  const token = useSession();
   ////FUNCTION/////////////..............................
   useEffect(() => {
     async function fetchProduct() {
@@ -137,7 +140,18 @@ export default function SingleProduct({ id }: { id: string }) {
           <div className="space-y-3">
             <AddToCart id={id} />
 
-            <PayButton productId={product?.id!} />
+            {token.status === "unauthenticated" ? (
+              <Link
+                className="w-full"
+                href={`/auth/getstarted/?path=/shop/${id}`}
+              >
+                <Button variant={"outline"} className="w-full">
+                  Buy Now
+                </Button>
+              </Link>
+            ) : (
+              <PayButton productId={product?.id!} />
+            )}
           </div>
         </div>
       </div>
