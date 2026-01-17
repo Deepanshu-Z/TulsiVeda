@@ -48,7 +48,6 @@ export const CartItems = ({ loading, products, setProducts }: PropType) => {
   // 4️⃣ Final total
   const total = subtotal + tax;
 
-  console.log("@@PRODUCTS INFO ARE: ", products);
   useEffect(() => {}, [products]);
 
   const updateQuantity = async (

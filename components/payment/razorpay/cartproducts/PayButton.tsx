@@ -73,7 +73,7 @@ export default function PayButton() {
       />
       <Button
         onClick={createOrder}
-        variant="outline"
+        variant="default"
         className="w-full"
         disabled={buyLoading}
       >
