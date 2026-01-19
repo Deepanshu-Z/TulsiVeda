@@ -79,6 +79,15 @@ export const status = pgEnum("status", [
   "replied",
 ]);
 
+export const orderStatus = pgEnum("orderStatus", [
+  "created ",
+  " paid ",
+  " failed ",
+  " cancelled",
+]);
+
+export const paymentStatus = pgEnum("payment_status", ["success", "failed"]);
+
 /////////////////////////TABLES///////////////////////////////////
 export const users = pgTable("user", {
   id: text("id")
@@ -116,7 +125,7 @@ export const accounts = pgTable(
         columns: [account.provider, account.providerAccountId],
       }),
     },
-  ]
+  ],
 );
 
 export const sessions = pgTable("session", {
@@ -140,7 +149,7 @@ export const verificationTokens = pgTable(
         columns: [verificationToken.identifier, verificationToken.token],
       }),
     },
-  ]
+  ],
 );
 
 export const authenticators = pgTable(
@@ -163,7 +172,7 @@ export const authenticators = pgTable(
         columns: [authenticator.userId, authenticator.credentialID],
       }),
     },
-  ]
+  ],
 );
 
 export const products = pgTable("products", {
@@ -280,4 +289,65 @@ export const chats = pgTable("chats", {
   role: rolesEnum().notNull().default("support"),
 });
 
-export default { users, products, cart, cartItems, addresses, chats, ticket };
+export const orders = pgTable("orders", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+
+  order_id: text("order_id").notNull().unique(), // razorpay_order_id
+
+  user_id: text("user_id").notNull(),
+
+  amount: integer("amount").notNull(), // store in paise
+
+  currency: text("currency").notNull().default("INR"),
+
+  order_status: orderStatus("order_status").notNull(),
+
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export const payments = pgTable("payments", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+
+  order_id: text("order_id")
+    .notNull()
+    .references(() => orders.order_id, { onDelete: "cascade" }),
+
+  payment_id: text("payment_id").notNull().unique(),
+
+  signature: text("signature").notNull(),
+
+  provider: text("provider").notNull().default("razorpay"),
+
+  amount: integer("amount").notNull(),
+
+  method: text("method"),
+
+  payment_status: paymentStatus("payment_status").notNull(),
+
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+/////////////////////////END///////////////////////////////////
+export default {
+  users,
+  products,
+  cart,
+  cartItems,
+  addresses,
+  chats,
+  ticket,
+  orders,
+  payments,
+};
