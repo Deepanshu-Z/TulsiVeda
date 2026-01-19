@@ -21,6 +21,7 @@ import PayButton from "../payment/razorpay/singleproduct/PayButton";
 import { getToken } from "next-auth/jwt";
 import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
+import toast, { Toaster } from "react-hot-toast";
 
 export type Product = {
   id: string;
@@ -80,6 +81,8 @@ export default function SingleProduct({ id }: { id: string }) {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
+      <Toaster />
+
       {/* PRODUCT IMAGES + INFO */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* LEFT: PRODUCT IMAGE */}

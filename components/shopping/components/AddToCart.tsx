@@ -4,6 +4,7 @@ import axios from "axios";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
 
 const AddToCart = ({ id }: { id: string }) => {
   const { data: session, status } = useSession();
@@ -19,9 +20,21 @@ const AddToCart = ({ id }: { id: string }) => {
       if (response.data.success) {
         console.log("Ok");
         setLoading(false);
+        toast("Added to cart!", {
+          duration: 4000,
+          position: "top-center",
+
+          style: {
+            background: "#16a34a",
+            color: "#fff",
+            fontWeight: "500",
+          },
+
+          icon: "👏",
+        });
       } else {
         console.log(response.data.error);
-        console.log("Not ok");
+        toast.error("Failed to add into cart");
       }
     } else {
       router.replace(`/auth/getstarted/?path=/shop/${id}`);
