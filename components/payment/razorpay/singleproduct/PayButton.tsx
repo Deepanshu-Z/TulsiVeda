@@ -30,10 +30,11 @@ export default function PayButton({ productId }: PayButtonProps) {
       setBuyLoading(true);
 
       const { data } = await axios.post(
-        `/api/razorpay/createorder/singleproduct?productId=${productId}`
+        `/api/razorpay/createorder/singleproduct?productId=${productId}`,
       );
 
       if (!data?.success) {
+        console.log(data.message, data.error);
         throw new Error("Order creation failed");
       }
 
