@@ -89,18 +89,21 @@ export const orderStatus = pgEnum("orderStatus", [
 export const paymentStatus = pgEnum("payment_status", ["success", "failed"]);
 
 /////////////////////////TABLES///////////////////////////////////
-export const users = pgTable("user", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  name: text("name"),
-  email: text("email").unique(),
-  emailVerified: timestamp("emailVerified", { mode: "date" }),
-  image: text("image"),
-  phone: text("phone").default(""),
-  role: rolesEnum().default("user"),
-  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
-});
+export const users = pgTable(
+  "user",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    email: text("email").notNull(),
+    createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+    role: rolesEnum().default("user"),
+  },
+  (t) => ({
+    emailIdx: uniqueIndex("users_email_idx").on(t.email),
+    createdAtIdx: index("users_created_at_idx").on(t.createdAt),
+  }),
+);
 
 export const accounts = pgTable(
   "account",
