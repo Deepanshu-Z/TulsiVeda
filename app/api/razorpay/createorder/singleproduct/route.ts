@@ -32,7 +32,9 @@ export async function POST(req: Request) {
       return Response.json({ status: 404, message: "Product does not found" });
 
     const order = await razorpay.orders.create({
-      amount: (product[0].price - product[0].discountPrice!) * 100, // ₹500 → paise
+      amount:
+        (product[0].price - product[0].discountPrice!) * 100 +
+        ((product[0].price - product[0].discountPrice!) * 100 * 5) / 100, // ₹500 → paise
       currency: "INR",
       receipt: `rcpt_${Date.now()}`,
     });

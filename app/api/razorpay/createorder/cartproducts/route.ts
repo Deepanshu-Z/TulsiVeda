@@ -14,7 +14,7 @@ export const POST = async () => {
   });
   //@ts-ignore
   const userId = session?.user.id;
-
+  console.log("@YO YO YO");
   try {
     const response = await db
       .select()

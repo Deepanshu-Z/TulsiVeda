@@ -30,7 +30,7 @@ export default function PayButton() {
       setBuyLoading(true);
 
       const { data } = await axios.post(
-        "/api/razorpay/createorder/cartproducts"
+        "/api/razorpay/createorder/cartproducts",
       );
 
       if (!data?.success) {
@@ -51,6 +51,18 @@ export default function PayButton() {
             body: JSON.stringify(response),
           });
           alert("Payment verified");
+        },
+        modal: {
+          ondismiss: () => {
+            fetch("/api/razorpay/updateorder/cancel", {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                orderId: data.order.id,
+                reason: "USER_CANCELLED",
+              }),
+            });
+          },
         },
       };
 
