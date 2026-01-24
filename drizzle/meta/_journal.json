@@ -225,6 +225,27 @@
       "when": 1769073304495,
       "tag": "0031_clumsy_peter_quill",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1769235612655,
+      "tag": "0032_faulty_clea",
+      "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1769235778808,
+      "tag": "0033_flawless_hitman",
+      "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1769235843224,
+      "tag": "0034_silent_lockjaw",
+      "breakpoints": true
     }
   ]
 }

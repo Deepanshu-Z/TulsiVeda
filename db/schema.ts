@@ -81,7 +81,7 @@ export const status = pgEnum("status", [
   "replied",
 ]);
 
-export const orderStatus = pgEnum("orderStatus", [
+export const order_status = pgEnum("order_status", [
   "created",
   "paid",
   "failed",
@@ -304,7 +304,7 @@ export const orders = pgTable("orders", {
 
   currency: text("currency").notNull().default("INR"),
 
-  order_status: orderStatus("order_status").notNull(),
+  order_status: order_status("order_status").notNull(),
 
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
