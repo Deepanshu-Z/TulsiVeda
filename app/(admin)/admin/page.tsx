@@ -51,12 +51,6 @@ const revenueData = [
   { name: "Jul", revenue: 7000 },
 ];
 
-const paymentStatusData = [
-  { name: "Successful", value: 65, color: "hsl(142, 76%, 36%)" },
-  { name: "Failed", value: 20, color: "hsl(0, 84%, 60%)" },
-  { name: "Cancelled", value: 15, color: "hsl(215, 14%, 34%)" },
-];
-
 const recentOrders = [
   {
     id: "#ORD-7821",
@@ -86,6 +80,13 @@ const getStatusBadge = (status: string) => {
 
   return variants[status] || variants.pending;
 };
+type Order = {
+  id: string;
+  order_id: string;
+  user_id: string;
+  amount: number;
+  order_status: string;
+};
 
 export default function Dashboard() {
   // ✅ API Stats State
@@ -96,12 +97,14 @@ export default function Dashboard() {
     cancelledOrders: 0,
   });
 
+  const [orders, setOrders] = useState<Order[]>([]);
   // ✅ Loading State
   const [loading, setLoading] = useState(true);
 
-  // ✅ Fetch Stats from API (ONLY ONE USEEFFECT)
+  // ✅ Fetch Stats from API
   useEffect(() => {
     const fetchStats = async () => {
+      setLoading(true);
       try {
         const res = await axios.get("/api/admin/stats");
 
@@ -117,10 +120,12 @@ export default function Dashboard() {
 
     fetchStats();
   }, []);
+
+  // ✅ Cards
   const statsCards = [
     {
       title: "Total Revenue",
-      value: `₹${stats.totalAmount.toLocaleString()}`,
+      value: `₹${stats.totalAmount.toLocaleString("en-IN")}`,
       icon: DollarSign,
     },
     {
@@ -139,6 +144,45 @@ export default function Dashboard() {
       icon: CreditCard,
     },
   ];
+
+  // ✅ Payment Breakdown (Backend Accurate)
+  const totalOrders = stats.totalOrders ?? 0;
+  const failedPayments = stats.failedPayments ?? 0;
+  const cancelledPayments = stats.cancelledOrders ?? 0;
+
+  // Successful = Total - Failed - Cancelled
+  const successfulPayments = Math.max(
+    totalOrders - failedPayments - cancelledPayments,
+    0,
+  );
+
+  // ✅ Dynamic Chart Data
+  const paymentStatusData = [
+    {
+      name: "Successful",
+      value: successfulPayments,
+      color: "hsl(142, 76%, 36%)",
+    },
+    { name: "Failed", value: failedPayments, color: "hsl(0, 84%, 60%)" },
+    {
+      name: "Cancelled",
+      value: cancelledPayments,
+      color: "hsl(215, 14%, 34%)",
+    },
+  ].filter((item) => item.value > 0);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      const response = await axios.get("/api/admin/getorders");
+      if (response.data.success) setOrders(response.data.recentOrders);
+      else console.log("error getting orders", response.data.error);
+    };
+    fetchOrders();
+  }, []);
+
+  useEffect(() => {
+    console.log("YOUR RECENT ORDERS ARE: ", orders);
+  }, [orders]);
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -250,6 +294,7 @@ export default function Dashboard() {
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
+                      key={paymentStatusData.length}
                       data={paymentStatusData}
                       dataKey="value"
                       innerRadius={60}
@@ -274,41 +319,55 @@ export default function Dashboard() {
             <CardTitle>Recent Orders</CardTitle>
             <CardDescription>Latest transactions from store</CardDescription>
           </CardHeader>
+          {orders?.length > 0 && (
+            <CardContent className="space-y-4">
+              {orders?.length > 0 && (
+                <CardContent className="space-y-4">
+                  {orders.map((order) => (
+                    <div>
+                      <div
+                        key={order.id}
+                        className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
+                      >
+                        {/* Left Side */}
+                        <div className="flex items-center gap-4">
+                          <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                            <Users className="h-5 w-5 text-primary" />
+                          </div>
 
-          <CardContent className="space-y-4">
-            {recentOrders.map((order) => (
-              <div
-                key={order.id}
-                className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Users className="h-5 w-5 text-primary" />
-                  </div>
+                          <div>
+                            {/* Order ID */}
+                            <p className="font-medium">{order.order_id}</p>
 
-                  <div>
-                    <p className="font-medium">{order.customer}</p>
-                    <p className="text-sm text-muted-foreground">{order.id}</p>
-                  </div>
-                </div>
+                            {/* User ID */}
+                            <p className="text-sm text-muted-foreground">
+                              User: {order.user_id.slice(0, 8)}...
+                            </p>
+                          </div>
+                        </div>
 
-                <div className="flex items-center gap-4">
-                  <p className="font-medium">{order.amount}</p>
+                        {/* Right Side */}
+                        <div className="flex items-center gap-4">
+                          {/* Amount */}
+                          <p className="font-medium">
+                            ₹{order.amount.toFixed(2)}
+                          </p>
 
-                  <Badge
-                    variant="outline"
-                    className={getStatusBadge(order.status).className}
-                  >
-                    {order.status}
-                  </Badge>
+                          {/* Status */}
+                          <Badge variant="outline">{order.order_status}</Badge>
 
-                  <Button variant="ghost" size="icon">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </CardContent>
+                          <Button variant="ghost" size="icon">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <Button>Show More</Button>
+                </CardContent>
+              )}
+            </CardContent>
+          )}
         </Card>
       </main>
     </div>
