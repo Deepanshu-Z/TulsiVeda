@@ -40,7 +40,7 @@ const Page = () => {
         );
 
         if (res.data.success) {
-          setOrders(res.data.data);
+          setOrders(res.data.recentOrders);
           setTotalPages(res.data.meta.totalPages);
         }
       } finally {
@@ -106,14 +106,14 @@ const Page = () => {
           </p>
         )}
 
-        {!loading && orders.length === 0 && (
+        {!loading && orders?.length === 0 && (
           <p className="text-sm text-muted-foreground font-semibold">
             No orders found
           </p>
         )}
 
         {!loading &&
-          orders.map((order) => (
+          orders?.map((order) => (
             <div
               key={order.id}
               className="flex items-center justify-between rounded-lg border p-4 hover:bg-muted/50 transition"

@@ -12,6 +12,7 @@ import {
   ShoppingBag,
   Store,
   Ticket,
+  User,
   X,
 } from "lucide-react";
 
@@ -47,6 +48,11 @@ const items: NavItem[] = [
     href: "/admin/orders",
     icon: Settings,
   },
+  {
+    title: "Users",
+    href: "/admin/users",
+    icon: User,
+  },
 ];
 
 const AdminSidebar = () => {
@@ -60,7 +66,7 @@ const AdminSidebar = () => {
         <button onClick={() => setOpen(true)}>
           <Menu className="h-6 w-6" />
         </button>
-        <span className="font-bold">Admin Panel</span>
+        <span className="font-bold">Home</span>
       </div>
 
       {/* Mobile Drawer */}

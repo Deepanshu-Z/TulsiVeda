@@ -11,6 +11,7 @@ export const GET = async (req: Request) => {
   const offset = (page - 1) * limit;
   type OrderStatus = "created" | "paid" | "failed" | "cancelled";
 
+  console.log(status);
   try {
     const whereCondition =
       status && status !== "ALL"
@@ -35,7 +36,7 @@ export const GET = async (req: Request) => {
 
     return Response.json({
       success: true,
-      data: recentOrders,
+      recentOrders,
       meta: {
         page,
         limit,

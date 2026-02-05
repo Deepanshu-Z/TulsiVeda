@@ -210,14 +210,6 @@ const TransactionDetailsPage = () => {
                   <span className="font-mono text-lg font-medium">
                     {tx.order_id}
                   </span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6 text-muted-foreground"
-                    onClick={() => navigator.clipboard.writeText(tx.order_id)}
-                  >
-                    <Copy size={12} />
-                  </Button>
                 </div>
               </div>
 
@@ -283,7 +275,7 @@ const TransactionDetailsPage = () => {
                     )}
                   </TableCell>
                   <TableCell className="text-xs text-muted-foreground font-mono">
-                    {item.id.slice(0, 18)}...
+                    {item.id}
                   </TableCell>
                   <TableCell className="text-right font-medium">
                     {formatCurrency(item.amount, item.currency)}

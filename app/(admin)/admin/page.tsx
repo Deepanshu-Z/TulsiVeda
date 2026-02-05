@@ -40,6 +40,7 @@ import {
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Link from "next/link";
 
 const revenueData = [
   { name: "Jan", revenue: 4000 },
@@ -173,7 +174,9 @@ export default function Dashboard() {
 
   useEffect(() => {
     const fetchOrders = async () => {
-      const response = await axios.get(`/api/admin/getorders?limit=5&page=1`);
+      const response = await axios.get(
+        `/api/admin/getorders?limit=5&page=1&statusFilter=ALL`,
+      );
       if (response.data.success) setOrders(response.data.recentOrders);
       else console.log("error getting orders", response.data.error);
     };
@@ -363,7 +366,9 @@ export default function Dashboard() {
                       </div>
                     </div>
                   ))}
-                  <Button>Show More</Button>
+                  <Link href="/admin/orders">
+                    <Button>Show More</Button>
+                  </Link>
                 </CardContent>
               )}
             </CardContent>
