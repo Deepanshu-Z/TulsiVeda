@@ -80,7 +80,7 @@ const getStatusBadge = (status: string) => {
 
   return variants[status] || variants.pending;
 };
-type Order = {
+export type Order = {
   id: string;
   order_id: string;
   user_id: string;
@@ -173,7 +173,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     const fetchOrders = async () => {
-      const response = await axios.get("/api/admin/getorders");
+      const response = await axios.get(`/api/admin/getorders?limit=5&page=1`);
       if (response.data.success) setOrders(response.data.recentOrders);
       else console.log("error getting orders", response.data.error);
     };

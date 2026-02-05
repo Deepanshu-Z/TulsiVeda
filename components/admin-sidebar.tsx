@@ -36,8 +36,8 @@ const items = [
     icon: Store,
   },
   {
-    title: "Settings",
-    href: "/admin/settings",
+    title: "Orders",
+    href: "/admin/orders",
     icon: Settings,
   },
 ];
@@ -69,7 +69,7 @@ export function AdminSidebar() {
                 "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition",
                 active
                   ? "bg-muted font-medium"
-                  : "text-muted-foreground hover:bg-muted"
+                  : "text-muted-foreground hover:bg-muted",
               )}
             >
               <Icon className="h-4 w-4" />
