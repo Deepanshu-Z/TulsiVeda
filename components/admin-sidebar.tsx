@@ -110,7 +110,7 @@ const AdminSidebar = () => {
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex w-64 h-screen border-r bg-background flex-col">
         <div className="h-16 flex items-center px-6 font-bold border-b">
-          <Link href="/">Admin Panel</Link>
+          <Link href="/">Home</Link>
         </div>
 
         <nav className="px-3 py-4 space-y-1">

@@ -17,11 +17,12 @@ export const GET = async (req: Request) => {
   try {
     const response = await db.select().from(users);
     return Response.json({
-      users,
+      users: response,
       success: true,
       message: "Successfuly fetched",
     });
   } catch (error) {
+    console.log(error);
     return Response.json({
       error,
       success: false,
