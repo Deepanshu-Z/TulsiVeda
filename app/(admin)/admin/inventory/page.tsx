@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Delete, Trash } from "lucide-react";
 export type ProductType = {
   id: string;
 
@@ -54,13 +55,23 @@ const page = () => {
     setProducts(response.data.response);
   };
 
+  const deleteProduct = async (id: string) => {
+    const response = await axios.delete("/api/admin/products/deleteproduct", {
+      data: { productId: id },
+    });
+    console.log(response.data);
+    if (response.data.success) {
+    } else {
+    }
+  };
+
   useEffect(() => {
     fetchAllProducts();
   }, []);
 
   return (
     <div className="grid grid-cols-2 gap-0">
-      {products.map((product: any) => (
+      {products.map((product: ProductType) => (
         <Card key={product.id} className="w-[320px]  overflow-hidden">
           {/* Image */}
           <img
@@ -70,6 +81,10 @@ const page = () => {
           />
 
           <CardHeader className="space-y-1">
+            <Trash
+              onClick={() => deleteProduct(product.id)}
+              className="cursor-pointer"
+            />
             <CardTitle className="text-base line-clamp-2">
               {product.title}
             </CardTitle>

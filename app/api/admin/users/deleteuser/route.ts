@@ -35,7 +35,6 @@ export const DELETE = async (req: Request) => {
       // 4️⃣ finally delete user
       await tx.delete(users).where(eq(users.id, userId));
     });
-
     return Response.json({ message: "Successfully deleted", success: true });
   } catch (error) {
     return Response.json({
