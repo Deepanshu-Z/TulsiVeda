@@ -37,6 +37,7 @@ import {
   User as UserIcon,
   Loader2,
 } from "lucide-react";
+import Link from "next/link";
 
 interface User {
   id: string;
@@ -224,13 +225,18 @@ export default function UsersPage() {
                               onClick={() =>
                                 navigator.clipboard.writeText(user.id)
                               }
+                              className="cursor-pointer"
                             >
                               Copy User ID
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              View Transactions
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="text-red-600">
+                            <Link
+                              href={`/admin/orders/userspecific?userId=${user.id}&orderId=*`}
+                            >
+                              <DropdownMenuItem className="cursor-pointer">
+                                View Transactions
+                              </DropdownMenuItem>
+                            </Link>
+                            <DropdownMenuItem className="text-red-600 cursor-pointer">
                               Delete User
                             </DropdownMenuItem>
                           </DropdownMenuContent>
