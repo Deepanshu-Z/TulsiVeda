@@ -87,18 +87,20 @@ export default function Dashboard() {
     data: stats,
     isLoading: statsLoading,
     isError: statsError,
-  } = useQuery({
+  } = useQuery<Stats>({
     queryKey: ["admin-stats"],
     queryFn: fetchStats,
+    staleTime: 60_000,
   });
 
   const {
     data: orders = [],
     isLoading: ordersLoading,
     isError: ordersError,
-  } = useQuery({
-    queryKey: ["admin-orders", { page: 1, limit: 5, status: "ALL" }],
+  } = useQuery<Order[]>({
+    queryKey: ["admin-orders"],
     queryFn: fetchOrders,
+    staleTime: 60_000,
   });
 
   if (statsLoading || ordersLoading) return <p>Loading...</p>;

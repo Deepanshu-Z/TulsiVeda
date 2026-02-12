@@ -1,20 +1,28 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "../globals.css";
-import { Header } from "@/components/landing/Header";
-import Footer from "@/components/landing/Footer";
-import { Providers } from "../providers";
+"use client";
 
-export default function Layout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+import Footer from "@/components/landing/Footer";
+import { Header } from "@/components/landing/Header";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useState } from "react";
+
+export default function Providers({ children }: { children: React.ReactNode }) {
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 60_000, // 1 min
+            refetchOnWindowFocus: false,
+          },
+        },
+      }),
+  );
+
   return (
-    <Providers>
+    <QueryClientProvider client={queryClient}>
       <Header />
       {children}
       <Footer />
-    </Providers>
+    </QueryClientProvider>
   );
 }

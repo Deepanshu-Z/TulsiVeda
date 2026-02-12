@@ -1,4 +1,5 @@
 "use client";
+
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,18 +12,16 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useEffect, useState } from "react";
-import getproductdetails from "./actions/getproductdetals";
-import { string } from "zod";
 import AddToCart from "@/components/shopping/components/AddToCart";
-import he from "he";
-import axios from "axios";
 import PayButton from "../payment/razorpay/singleproduct/PayButton";
-import { getToken } from "next-auth/jwt";
-import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
-import toast, { Toaster } from "react-hot-toast";
+import he from "he";
+import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
+import getproductdetails from "./actions/getproductdetals";
+import { useEffect, useState } from "react";
 
+// ---------------- TYPES ----------------
 export type Product = {
   id: string;
   name: string;
@@ -35,41 +34,42 @@ export type Product = {
   ingredients: string[];
   allergens: string[];
   goal: string[];
-
   certifications: string[];
-
   directions: string;
   form: string;
-
   manufacturedDate: string;
   expiryDate: string;
-  createdAt: string;
-
   galleryImages: string[];
-
   warnings: string | null;
 };
 
+// ---------------- COMPONENT ----------------
 export default function SingleProduct({ id }: { id: string }) {
-  ////VARS..............................
-  const [product, setProduct] = useState<Product>();
-  const [loading, setLoading] = useState<boolean>(true);
-  const [selectedImage, setSelectedImage] = useState("");
-  const token = useSession();
-  ////FUNCTION/////////////..............................
-  useEffect(() => {
-    async function fetchProduct() {
-      setLoading(true);
-      const response = await getproductdetails(id);
-      setProduct(response);
-      setSelectedImage(response.galleryImages[0]);
-      setLoading(false);
-    }
-    fetchProduct();
-  }, []);
+  const { status } = useSession();
 
-  ////RENDERING/////////////..............................
-  if (loading) {
+  const {
+    data: product,
+    isLoading,
+    isError,
+  } = useQuery<Product>({
+    queryKey: ["product", id],
+    queryFn: () => getproductdetails(id),
+    staleTime: 5 * 60 * 1000, // 5 min (products don't change often)
+  });
+
+  const selectedImage = product?.galleryImages?.[0] ?? "";
+
+  // ---------------- STATES ----------------
+  const [activeImage, setActiveImage] = useState<string>("");
+
+  useEffect(() => {
+    if (product?.galleryImages?.length) {
+      setActiveImage(product.galleryImages[0]);
+    }
+  }, [product]);
+
+  // ---------------- LOADING / ERROR ----------------
+  if (isLoading) {
     return (
       <div className="p-10 space-y-4">
         <div className="bg-gray-200 h-6 w-1/3 rounded animate-pulse"></div>
@@ -79,19 +79,20 @@ export default function SingleProduct({ id }: { id: string }) {
     );
   }
 
+  if (isError || !product) {
+    return <p className="p-10">Failed to load product</p>;
+  }
+
+  // ---------------- RENDER ----------------
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <Toaster />
-
-      {/* PRODUCT IMAGES + INFO */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-        {/* LEFT: PRODUCT IMAGE */}
-        <Card className="overflow-hidden ">
-          {/* Main Image */}
+        {/* IMAGE SECTION */}
+        <Card className="overflow-hidden">
           <CardContent className="p-0">
             <Image
-              src={selectedImage}
-              alt="Product Image"
+              src={activeImage || selectedImage}
+              alt={product.name}
               width={600}
               height={500}
               className="w-full h-[400px] object-cover"
@@ -99,182 +100,106 @@ export default function SingleProduct({ id }: { id: string }) {
             />
           </CardContent>
 
-          {/* Thumbnails */}
           <CardContent className="flex gap-2 p-3 overflow-x-auto">
-            {product?.galleryImages?.map((image, index) => (
+            {product.galleryImages.map((img, i) => (
               <button
-                key={index}
-                className="border rounded-md overflow-hidden hover:ring-2 hover:ring-primary transition"
-                onClick={() => setSelectedImage(image)}
+                key={i}
+                onClick={() => setActiveImage(img)}
+                className="border rounded-md overflow-hidden hover:ring-2 hover:ring-primary"
               >
                 <Image
-                  src={image}
-                  alt={`Thumbnail ${index}`}
+                  src={img}
+                  alt={`thumb-${i}`}
                   width={80}
                   height={80}
-                  className="object-cover w-20 h-20"
+                  className="w-20 h-20 object-cover"
                 />
               </button>
             ))}
           </CardContent>
         </Card>
 
-        {/* RIGHT: INFO */}
+        {/* INFO SECTION */}
         <div className="space-y-4">
-          <Badge className="cursor-pointer" variant="secondary">
-            {product?.category}
-          </Badge>
+          <Badge variant="secondary">{product.category}</Badge>
 
-          <h1 className="text-3xl font-bold">{product?.name}</h1>
-
-          <p className="text-muted-foreground">{product?.title}</p>
+          <h1 className="text-3xl font-bold">{product.name}</h1>
+          <p className="text-muted-foreground">{product.title}</p>
 
           <div className="flex items-center gap-3">
-            <span className="text-2xl font-bold">
-              ₹{product?.discountPrice}
-            </span>
+            <span className="text-2xl font-bold">₹{product.discountPrice}</span>
             <span className="line-through text-muted-foreground">
-              ₹{product?.price}
+              ₹{product.price}
             </span>
           </div>
 
           <Separator />
 
-          <div className="space-y-3">
-            <AddToCart id={id} />
+          <AddToCart id={id} />
 
-            {token.status === "unauthenticated" ? (
-              <Link
-                className="w-full"
-                href={`/auth/getstarted/?path=/shop/${id}`}
-              >
-                <Button variant={"outline"} className="w-full">
-                  Buy Now
-                </Button>
-              </Link>
-            ) : (
-              <PayButton productId={product?.id!} />
-            )}
-          </div>
+          {status === "unauthenticated" ? (
+            <Link href={`/auth/getstarted/?path=/shop/${id}`}>
+              <Button variant="outline" className="w-full">
+                Buy Now
+              </Button>
+            </Link>
+          ) : (
+            <PayButton productId={product.id} />
+          )}
         </div>
       </div>
 
-      {/* PRODUCT DETAILS */}
+      {/* DETAILS */}
       <div className="mt-12">
-        <Tabs defaultValue="specs">
+        <Tabs defaultValue="description">
           <TabsList>
             <TabsTrigger value="description">Description</TabsTrigger>
             <TabsTrigger value="specs">Specifications</TabsTrigger>
             <TabsTrigger value="faq">FAQ</TabsTrigger>
           </TabsList>
 
-          {/* DESCRIPTION */}
           <TabsContent value="description">
-            <Card className="rounded-xl border bg-background shadow-sm">
-              <CardContent className="p-6 space-y-4">
-                <h3 className="text-lg font-semibold text-foreground">
-                  Product Description
-                </h3>
+            <Card>
+              <CardContent className="p-6">
                 <div
                   dangerouslySetInnerHTML={{
-                    __html: he.decode(product?.description ?? ""),
+                    __html: he.decode(product.description),
                   }}
                 />
               </CardContent>
             </Card>
           </TabsContent>
 
-          {/* SPECIFICATIONS */}
           <TabsContent value="specs">
             <Card className="p-5 space-y-2">
               <p>
-                <strong>Form:</strong>{" "}
-                <span>
-                  {" "}
-                  <Badge className="cursor-pointer" variant="outline">
-                    {product?.form}
-                  </Badge>
-                </span>
+                <strong>Form:</strong> {product.form}
               </p>
               <p>
-                <strong>Goal:</strong>{" "}
-                {product?.goal.map((g, i) => (
-                  <span key={i}>
-                    {" "}
-                    <Badge className="cursor-pointer" variant="outline">
-                      {g}
-                    </Badge>
-                  </span>
-                ))}
+                <strong>Goals:</strong> {product.goal.join(", ")}
               </p>
               <p>
-                <strong>Ingredients:</strong>{" "}
-                {product?.ingredients.map((i, index) => (
-                  <span key={index}>
-                    {" "}
-                    <Badge className="cursor-pointer" variant="outline">
-                      {i}
-                    </Badge>
-                  </span>
-                ))}
+                <strong>Ingredients:</strong> {product.ingredients.join(", ")}
               </p>
               <p>
-                <strong>Allergens:</strong>
-                {product?.allergens.map((a, i) => (
-                  <span key={i}>
-                    {" "}
-                    <Badge className="cursor-pointer" variant="outline">
-                      {a}
-                    </Badge>
-                  </span>
-                ))}
+                <strong>Allergens:</strong> {product.allergens.join(", ")}
               </p>
               <p>
-                <strong>Directions:</strong>{" "}
-                <Badge className="cursor-pointer" variant="outline">
-                  {product?.directions}
-                </Badge>
+                <strong>Certifications:</strong>{" "}
+                {product.certifications.join(", ")}
               </p>
               <p>
-                <strong>Certifications:</strong>
-                {product?.certifications.map((c, i) => (
-                  <span key={i}>
-                    {" "}
-                    <Badge className="cursor-pointer" variant="outline">
-                      {c}
-                    </Badge>
-                  </span>
-                ))}
-              </p>
-              <p>
-                <strong>Manufactured Date:</strong>{" "}
-                <Badge className="cursor-pointer" variant="outline">
-                  {product?.manufacturedDate}
-                </Badge>
-              </p>
-              <p>
-                <strong>Expiry date:</strong>{" "}
-                <Badge className="cursor-pointer" variant="outline">
-                  {product?.expiryDate}
-                </Badge>
+                <strong>Expiry:</strong> {product.expiryDate}
               </p>
             </Card>
           </TabsContent>
 
-          {/* FAQ */}
           <TabsContent value="faq">
             <Accordion type="single" collapsible>
-              <AccordionItem value="item-1">
-                <AccordionTrigger>Is the shoe waterproof?</AccordionTrigger>
+              <AccordionItem value="1">
+                <AccordionTrigger>Is return available?</AccordionTrigger>
                 <AccordionContent>
-                  Yes, the leather is water-resistant for mild conditions.
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-2">
-                <AccordionTrigger>Is there a return policy?</AccordionTrigger>
-                <AccordionContent>
-                  7-day replacement available for manufacturing defects.
+                  7-day replacement for manufacturing defects.
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
