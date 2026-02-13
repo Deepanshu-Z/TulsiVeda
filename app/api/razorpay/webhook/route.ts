@@ -47,7 +47,7 @@ export async function POST(req: Request) {
           order_id: payment.order_id, // 👈 FROM WEBHOOK
           payment_id: payment.id,
           signature, // webhook signature header
-          amount: payment.amount,
+          amount: payment.amount / 100,
           method: payment.method,
           payment_status: "success",
         });

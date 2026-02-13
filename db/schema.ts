@@ -342,7 +342,9 @@ export const payments = pgTable("payments", {
 export const orderItems = pgTable(
   "order_items",
   {
-    id: text("id").primaryKey(),
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
     order_id: text("order_id").notNull(),
     product_id: text("product_id").notNull(),
     price: integer("price").notNull(),
