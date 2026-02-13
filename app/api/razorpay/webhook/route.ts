@@ -12,7 +12,13 @@ export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
   //@ts-ignore
   const userId = session?.user.id;
-  console.log("WEBHOOk RAANNNN!!!!!!!!!!");
+  console.log(
+    "WEBHOOk RAANNNN!!!!!!!!!!",
+    "USER ID is: ",
+    userId,
+    "session is: ",
+    session,
+  );
   const body = await req.text();
   const signature = req.headers.get("x-razorpay-signature")!;
 
