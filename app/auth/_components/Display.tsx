@@ -36,7 +36,7 @@ export default function Display() {
               <LogoIcon />
             </Link>
             <h1 className="mb-1 mt-4 text-xl font-semibold">
-              Create account in Nutrivya
+              Create account in Tulsiveda
             </h1>
             <p>Welcome! Create an account to get started</p>
           </div>
