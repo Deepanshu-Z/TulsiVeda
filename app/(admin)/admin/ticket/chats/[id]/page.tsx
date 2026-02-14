@@ -31,14 +31,14 @@ export default function Page() {
     //getting all chats
     setLoading(true);
     const { data } = await axios.get(
-      `/api/userprofile/chats?ticketId=${ticketId}`
+      `/api/userprofile/chats?ticketId=${ticketId}`,
     );
     setChats(data.chats);
     setLoading(false);
 
     //updating status to = "open"
     const response = await axios.put(
-      `/api/admin/tickets/update/categories/?status=open&ticketId=${ticketId}`
+      `/api/admin/tickets/update/categories/?status=open&ticketId=${ticketId}`,
     );
   };
 
@@ -51,7 +51,7 @@ export default function Page() {
         content,
         createdAt: new Date().toISOString(),
         role: "admin",
-        userEmail: "nutrivya@admin.com",
+        userEmail: "tulsiveda@admin.com",
       },
     ]);
 

@@ -1,16 +1,9 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 import {
   DollarSign,
   CreditCard,
@@ -18,7 +11,6 @@ import {
   ShoppingCart,
   Download,
   Filter,
-  Users,
   User,
 } from "lucide-react";
 
@@ -33,6 +25,7 @@ import {
   PieChart,
   Pie,
   Cell,
+  Legend,
 } from "recharts";
 
 import axios from "axios";
@@ -103,55 +96,78 @@ export default function Dashboard() {
     staleTime: 60_000,
   });
 
-  if (statsLoading || ordersLoading) return <p>Loading...</p>;
-  if (statsError || ordersError) return <p>Something went wrong</p>;
-  if (!stats) return null;
+  // ---------------- RENDERING STATES ----------------
+  if (statsLoading || ordersLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <p className="text-lg animate-pulse text-muted-foreground">
+          Loading analytics...
+        </p>
+      </div>
+    );
+  }
 
-  // ---------------- DERIVED DATA ----------------
+  if (statsError || ordersError || !stats) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <p className="text-destructive">
+          Failed to load dashboard data. Please try again.
+        </p>
+      </div>
+    );
+  }
+
+  // ---------------- DATA NORMALIZATION ----------------
+  // Ensure we are working with numbers even if API returns strings
+  const totalOrdersCount = Number(stats.totalOrders) || 0;
+  const failedCount = Number(stats.failedPayments) || 0;
+  const cancelledCount = Number(stats.cancelledOrders) || 0;
+
+  // Logical calculation for "Successful"
+  const successfulPayments = Math.max(
+    totalOrdersCount - failedCount - cancelledCount,
+    0,
+  );
+
   const statsCards = [
     {
       title: "Total Revenue",
-      value: `₹${stats.totalAmount.toLocaleString("en-IN")}`,
+      value: `₹${Number(stats.totalAmount).toLocaleString("en-IN")}`,
       icon: DollarSign,
     },
     {
       title: "Total Orders",
-      value: stats.totalOrders,
+      value: totalOrdersCount,
       icon: ShoppingCart,
     },
     {
       title: "Failed Payments",
-      value: stats.failedPayments,
+      value: failedCount,
       icon: XCircle,
     },
     {
       title: "Cancelled Orders",
-      value: stats.cancelledOrders,
+      value: cancelledCount,
       icon: CreditCard,
     },
   ];
 
-  const successfulPayments = Math.max(
-    stats.totalOrders - stats.failedPayments - stats.cancelledOrders,
-    0,
-  );
-
   const paymentStatusData = [
     { name: "Successful", value: successfulPayments, color: "#22c55e" },
-    { name: "Failed", value: stats.failedPayments, color: "#ef4444" },
-    { name: "Cancelled", value: stats.cancelledOrders, color: "#64748b" },
-  ].filter((i) => i.value > 0);
+    { name: "Failed", value: failedCount, color: "#ef4444" },
+    { name: "Cancelled", value: cancelledCount, color: "#64748b" },
+  ].filter((i) => i.value > 0); // Recharts requires filtering 0 values for Pie stability
 
   // ---------------- UI ----------------
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 border-b bg-background/95">
+      <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur">
         <div className="container flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
               <User className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold">AdminHub</span>
+            <span className="text-xl font-bold tracking-tight">AdminHub</span>
           </div>
 
           <div className="flex gap-2">
@@ -165,18 +181,18 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <main className="container px-4 py-8">
-        <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+      <main className="container px-4 py-8 max-w-7xl mx-auto">
+        <h1 className="text-3xl font-bold mb-6">Dashboard Overview</h1>
 
-        {/* STATS */}
+        {/* STATS CARDS */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
           {statsCards.map((s) => (
             <Card key={s.title}>
-              <CardHeader className="flex flex-row justify-between pb-2">
-                <CardTitle className="text-sm text-muted-foreground">
+              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
                   {s.title}
                 </CardTitle>
-                <s.icon className="h-5 w-5 text-primary" />
+                <s.icon className="h-4 w-4 text-primary" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{s.value}</div>
@@ -185,87 +201,157 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* CHARTS */}
+        {/* CHARTS SECTION */}
         <div className="grid gap-6 lg:grid-cols-7 mb-8">
           <Card className="lg:col-span-4">
             <CardHeader>
               <CardTitle>Revenue Overview</CardTitle>
             </CardHeader>
-            <CardContent className="h-[300px]">
-              <ResponsiveContainer>
-                <AreaChart data={revenueData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Area
-                    dataKey="revenue"
-                    stroke="#6366f1"
-                    fill="#6366f1"
-                    fillOpacity={0.2}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
+            <CardContent>
+              {/* Important: Recharts needs a div with height to render ResponsiveContainer */}
+              <div className="h-[350px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart
+                    data={revenueData}
+                    margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                  >
+                    <defs>
+                      <linearGradient
+                        id="colorRevenue"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop
+                          offset="5%"
+                          stopColor="#6366f1"
+                          stopOpacity={0.3}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor="#6366f1"
+                          stopOpacity={0}
+                        />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      vertical={false}
+                      stroke="#e2e8f0"
+                    />
+                    <XAxis
+                      dataKey="name"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fontSize: 12 }}
+                    />
+                    <YAxis
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fontSize: 12 }}
+                      tickFormatter={(value) => `₹${value}`}
+                    />
+                    <Tooltip />
+                    <Area
+                      type="monotone"
+                      dataKey="revenue"
+                      stroke="#6366f1"
+                      strokeWidth={2}
+                      fillOpacity={1}
+                      fill="url(#colorRevenue)"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
             </CardContent>
           </Card>
 
           <Card className="lg:col-span-3">
             <CardHeader>
-              <CardTitle>Payment Status</CardTitle>
+              <CardTitle>Payment Status Breakdown</CardTitle>
             </CardHeader>
-            <CardContent className="h-[250px]">
-              <ResponsiveContainer>
-                <PieChart>
-                  <Pie
-                    data={paymentStatusData}
-                    dataKey="value"
-                    innerRadius={60}
-                    outerRadius={90}
-                  >
-                    {paymentStatusData.map((e, i) => (
-                      <Cell key={i} fill={e.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
+            <CardContent>
+              <div className="h-[350px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={paymentStatusData}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={70}
+                      outerRadius={100}
+                      paddingAngle={5}
+                      stroke="none"
+                    >
+                      {paymentStatusData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend verticalAlign="bottom" height={36} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* ORDERS */}
+        {/* RECENT ORDERS TABLE-LIKE LIST */}
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Recent Orders</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {orders.map((order) => (
-              <div
-                key={order.id}
-                className="flex justify-between p-3 rounded bg-muted/50"
-              >
-                <div>
-                  <p className="font-medium">{order.order_id}</p>
-                  <p className="text-sm text-muted-foreground">
-                    User: {order.user_id.slice(0, 8)}...
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <span>₹{order.amount.toFixed(2)}</span>
-                  <Badge variant="outline">{order.order_status}</Badge>
-                  <Link
-                    href={`/admin/orders/userspecific?userId=${order.user_id}&orderId=${order.order_id}`}
-                  >
-                    Show
-                  </Link>
-                </div>
-              </div>
-            ))}
-
             <Link href="/admin/orders">
-              <Button className="mt-4">Show More</Button>
+              <Button variant="ghost" size="sm">
+                View All
+              </Button>
             </Link>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {orders.length === 0 ? (
+              <p className="text-center py-4 text-muted-foreground">
+                No recent orders found.
+              </p>
+            ) : (
+              orders.map((order) => (
+                <div
+                  key={order.id}
+                  className="flex items-center justify-between p-4 rounded-lg border bg-card transition-hover hover:bg-muted/30"
+                >
+                  <div className="space-y-1">
+                    <p className="font-semibold leading-none">
+                      {order.order_id}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      User ID: {order.user_id.slice(0, 12)}...
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-6">
+                    <div className="text-right">
+                      <p className="font-medium text-sm">
+                        ₹{Number(order.amount).toFixed(2)}
+                      </p>
+                      <Badge
+                        variant="secondary"
+                        className="text-[10px] uppercase"
+                      >
+                        {order.order_status}
+                      </Badge>
+                    </div>
+                    <Link
+                      href={`/admin/orders/userspecific?userId=${order.user_id}&orderId=${order.order_id}`}
+                    >
+                      <Button size="sm" variant="outline">
+                        Details
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              ))
+            )}
           </CardContent>
         </Card>
       </main>
