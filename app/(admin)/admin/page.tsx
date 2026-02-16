@@ -34,12 +34,17 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 
 // ---------------- TYPES ----------------
+type MonthlyData = {
+  month: string;
+  total: number;
+};
 type Stats = {
   totalAmount: number;
   totalOrders: number;
   failedPayments: number;
   cancelledOrders: number;
   createdOrders: number;
+  monthlyRevenue: MonthlyData[];
 };
 
 export type Order = {
@@ -97,7 +102,6 @@ export default function Dashboard() {
     staleTime: 60_000,
   });
 
-  // ---------------- RENDERING STATES ----------------
   if (statsLoading || ordersLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -118,8 +122,6 @@ export default function Dashboard() {
     );
   }
 
-  // ---------------- DATA NORMALIZATION ----------------
-  // Ensure we are working with numbers even if API returns strings
   const totalOrdersCount = Number(stats.totalOrders) || 0;
   const failedCount = Number(stats.failedPayments) || 0;
   const cancelledCount = Number(stats.cancelledOrders) || 0;
@@ -135,38 +137,32 @@ export default function Dashboard() {
       title: "Paid Orders Value",
       value: `₹${Number(stats.totalAmount).toLocaleString("en-IN")}`,
       icon: ReceiptIndianRupee,
-      link: "#",
     },
 
     {
       title: "Total Orders",
       value: totalOrdersCount,
       icon: ShoppingCart,
-      link: "/admin/orders",
     },
     {
       title: "Total Paid Orders ",
       value: successfulPayments,
       icon: ReceiptIndianRupee,
-      link: "/admin/orders",
     },
     {
       title: "Failed Payments",
       value: failedCount,
       icon: XCircle,
-      link: "/admin/orders",
     },
     {
       title: "Cancelled Orders",
       value: cancelledCount,
       icon: CreditCard,
-      link: "/admin/orders",
     },
     {
       title: "Pending Orders",
       value: createdCount,
       icon: CreditCard,
-      link: "/admin/orderes",
     },
   ];
 
@@ -205,42 +201,41 @@ export default function Dashboard() {
         {/* STATS CARDS */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
           {statsCards.map((s) => (
-            <Link href={s.link}>
-              <Card
-                className="transition-transform duration-300 hover:scale-110"
-                key={s.title}
-              >
-                <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    {s.title}
-                  </CardTitle>
-                  <s.icon className="h-4 w-4 text-primary" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{s.value}</div>
-                </CardContent>
-              </Card>
-            </Link>
+            <Card
+              className="transition-transform duration-300 hover:scale-110"
+              key={s.title}
+            >
+              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  {s.title}
+                </CardTitle>
+                <s.icon className="h-4 w-4 text-primary" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{s.value}</div>
+              </CardContent>
+            </Card>
           ))}
         </div>
 
         {/* CHARTS SECTION */}
         <div className="grid gap-6 lg:grid-cols-7 mb-8">
           <Card className="lg:col-span-4">
-            <CardHeader>
-              <CardTitle>Revenue Overview</CardTitle>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle>Revenue Growth</CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Last 4 months performance
+                </p>
+              </div>
             </CardHeader>
             <CardContent>
-              {/* Important: Recharts needs a div with height to render ResponsiveContainer */}
               <div className="h-[350px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart
-                    data={revenueData}
-                    margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
-                  >
+                  <AreaChart data={stats.monthlyRevenue}>
                     <defs>
                       <linearGradient
-                        id="colorRevenue"
+                        id="colorTotal"
                         x1="0"
                         y1="0"
                         x2="0"
@@ -248,12 +243,12 @@ export default function Dashboard() {
                       >
                         <stop
                           offset="5%"
-                          stopColor="#6366f1"
+                          stopColor="#2563eb"
                           stopOpacity={0.3}
                         />
                         <stop
                           offset="95%"
-                          stopColor="#6366f1"
+                          stopColor="#2563eb"
                           stopOpacity={0}
                         />
                       </linearGradient>
@@ -264,25 +259,42 @@ export default function Dashboard() {
                       stroke="#e2e8f0"
                     />
                     <XAxis
-                      dataKey="name"
+                      dataKey="month"
+                      tickFormatter={(value) => {
+                        const date = new Date(value);
+                        return date.toLocaleDateString("en-US", {
+                          month: "short",
+                        });
+                      }}
                       axisLine={false}
                       tickLine={false}
-                      tick={{ fontSize: 12 }}
                     />
                     <YAxis
                       axisLine={false}
                       tickLine={false}
-                      tick={{ fontSize: 12 }}
                       tickFormatter={(value) => `₹${value}`}
                     />
-                    <Tooltip />
+                    <Tooltip
+                      labelFormatter={(label) =>
+                        new Date(label).toLocaleDateString("en-US", {
+                          month: "long",
+                          year: "numeric",
+                        })
+                      }
+                      formatter={(value) => [`₹${value}`, "Revenue"]}
+                      contentStyle={{
+                        borderRadius: "8px",
+                        border: "none",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                      }}
+                    />
                     <Area
                       type="monotone"
-                      dataKey="revenue"
-                      stroke="#6366f1"
-                      strokeWidth={2}
+                      dataKey="total"
+                      stroke="#2563eb"
                       fillOpacity={1}
-                      fill="url(#colorRevenue)"
+                      fill="url(#colorTotal)"
+                      strokeWidth={3}
                     />
                   </AreaChart>
                 </ResponsiveContainer>

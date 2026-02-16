@@ -52,7 +52,22 @@ export async function GET() {
     .where(
       sql`${orders.user_id} = ${userId} AND ${orders.order_status} = 'paid'`,
     );
-
+  const monthlyRevenue = await db
+    .select({
+      month: sql<string>`to_char(date_trunc('month', ${orders.createdAt}), 'YYYY-MM')`,
+      total: sql<number>`cast(sum(${orders.amount}) as int)`,
+    })
+    .from(orders)
+    .where(
+      sql`
+      ${orders.user_id} = ${userId}
+      AND ${orders.order_status} = 'paid'
+      AND ${orders.createdAt} >= date_trunc('month', now()) - interval '3 months'
+    `,
+    )
+    .groupBy(sql`date_trunc('month', ${orders.createdAt})`)
+    .orderBy(sql`date_trunc('month', ${orders.createdAt}) DESC`);
+  console.log("HEY@@", monthlyRevenue);
   return Response.json({
     success: true,
     stats: {
@@ -60,7 +75,8 @@ export async function GET() {
       cancelledOrders: cancelledOrders.count || 0,
       failedPayments: failedPayments.count || 0,
       createdOrders: createdOrders.count || 0,
-      totalAmount: paidAmountResult.sum || 0, // Convert paise to Rupees if needed
+      totalAmount: paidAmountResult.sum || 0,
+      monthlyRevenue: monthlyRevenue,
     },
   });
 }
