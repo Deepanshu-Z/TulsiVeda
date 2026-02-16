@@ -38,6 +38,7 @@
     "drizzle-orm": "^0.44.7",
     "firebase": "^12.7.0",
     "he": "^1.2.0",
+    "ioredis": "^5.9.3",
     "lucide-react": "^0.555.0",
     "motion": "^12.23.25",
     "next": "^16.0.7",

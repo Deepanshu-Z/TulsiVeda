@@ -6,6 +6,7 @@ import db from "@/db/db";
 import { chats, ticket } from "@/db/schema";
 import { getToken } from "next-auth/jwt";
 import { eq } from "drizzle-orm";
+import { rateLimit } from "@/lib/rate-limit/redis";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -17,7 +18,16 @@ export async function POST(req: NextRequest) {
   const role = values.role;
   const userEmail =
     role == "user" ? "deepanshupokhriyal07@gmail.com" : values.userEmail;
+  const ip = req.headers.get("x-forwarded-for") ?? "unknown";
 
+  const allowed = await rateLimit(ip);
+
+  if (!allowed) {
+    return Response.json(
+      { error: "Too many emails. Try again later." },
+      { status: 429 },
+    );
+  }
   if (!userEmail) return Response.json("Unauthenticated", { status: 400 });
 
   const html = await render(

@@ -7,6 +7,7 @@ import { Loader } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 type Chat = {
   id: string;
   content: string;
@@ -25,7 +26,7 @@ export default function Page() {
 
   const fetchChats = async () => {
     const { data } = await axios.get(
-      `/api/userprofile/chats?ticketId=${ticketId}`
+      `/api/userprofile/chats?ticketId=${ticketId}`,
     );
     setChats(data.chats);
   };
@@ -54,6 +55,19 @@ export default function Page() {
       content,
       role: "user",
     });
+    if (response.status === 429) {
+      toast("Too many requests. Please wait 1 minute.", {
+        duration: 4000,
+        position: "top-center",
+        style: {
+          background: "#dc2626", // red
+          color: "#fff",
+          fontWeight: "500",
+        },
+        icon: "⏳",
+      });
+    }
+
     setBtnLoading(false);
     setContent("");
   };

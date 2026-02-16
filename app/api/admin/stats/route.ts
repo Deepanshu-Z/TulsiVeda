@@ -13,13 +13,11 @@ export async function GET() {
     return Response.json({ success: false }, { status: 401 });
   }
 
-  // 1. Total Orders
   const [totalOrders] = await db
     .select({ count: sql<number>`cast(count(*) as int)` })
     .from(orders)
     .where(eq(orders.user_id, userId));
 
-  // 2. Cancelled Orders
   const [cancelledOrders] = await db
     .select({ count: sql<number>`cast(count(*) as int)` })
     .from(orders)
@@ -27,9 +25,6 @@ export async function GET() {
       sql`${orders.user_id} = ${userId} AND ${orders.order_status} = 'cancelled'`,
     );
 
-  // 3. Failed Payments (FIXED)
-  // We use a LEFT JOIN to ensure we see the order even if the payment record is wonky,
-  // OR we check the payments table specifically.
   const [failedPayments] = await db
     .select({ count: sql<number>`cast(count(*) as int)` })
     .from(payments)
@@ -67,7 +62,6 @@ export async function GET() {
     )
     .groupBy(sql`date_trunc('month', ${orders.createdAt})`)
     .orderBy(sql`date_trunc('month', ${orders.createdAt}) DESC`);
-  console.log("HEY@@", monthlyRevenue);
   return Response.json({
     success: true,
     stats: {
