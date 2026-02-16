@@ -1,16 +1,16 @@
 import db from "@/db/db";
 import { orders } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { and, eq, ne } from "drizzle-orm";
 
 export const PATCH = async (req: Request) => {
   const { orderId } = await req.json();
   try {
-    const response = await db
+    const result = await db
       .update(orders)
-      .set({
-        order_status: "cancelled",
-      })
-      .where(eq(orders.order_id, orderId));
+      .set({ order_status: "cancelled" })
+      .where(
+        and(eq(orders.order_id, orderId), ne(orders.order_status, "failed")),
+      );
 
     return Response.json({
       success: true,
