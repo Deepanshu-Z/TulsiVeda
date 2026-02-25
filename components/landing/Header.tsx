@@ -67,8 +67,12 @@ export const Header = () => {
                       href={item.href}
                       className="text-muted-foreground hover:text-accent-foreground block duration-150"
                     >
-                      <span>{item.name}</span>
-                    </Link>
+         <strong className="inline-block text-lg
+ font-bold">
+  {item.name}
+</strong>
+</Link>
+
                   </li>
                 ))}
               </ul>

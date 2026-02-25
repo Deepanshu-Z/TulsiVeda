@@ -7,15 +7,17 @@ import Integrations from "@/components/landing/Integrations";
 import Features from "@/components/landing/Features";
 import Categories from "@/components/landing/Categories";
 import HeroSlider from "../../components/landing/HeroSlider";
+import FilterProducts from "@/components/landing/FilterProducts";
 
 export default function Home() {
   return (
     <div>
       {/* <Hero /> */}
       <HeroSlider />
+      <FilterProducts />
       <Features />
       <Products />
-      <Categories />
+      {/* <Categories /> */}
       <Testimonial />
     </div>
   );
